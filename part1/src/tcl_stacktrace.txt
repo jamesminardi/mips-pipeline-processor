@@ -1,0 +1,13 @@
+Fri Mar 25 10:07:21 CDT 2022
+Trace back: can't use empty string as operand of "-"
+    while executing
+"expr {(($ulx1 <= $ulx2) ? $ulx1 : $ulx2) - 1}"
+    (procedure "outerbox" line 11)
+    invoked from within
+"outerbox $bbox1 $bbox2"
+    (procedure "cmpl_extendselect_fbox" line 13)
+    invoked from within
+"cmpl_extendselect_fbox $cmpl(fbox:canvas) 43 15"
+    (command bound to event)
+  <2:/usr/local/mentor/questasim/linux_x86_64/tk8.6/bgerror.tcl:106: ::tkerror {can't use empty string as operand of "-"}
+  <1:eval:1: ::tk::dialog::error::bgerror {can't use empty string as operand of "-"}
