@@ -1,6 +1,10 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
+-- constants & types declaration
+library work;
+use work.MIPS_types.all;
+
 entity IFID_reg is
 	generic(N : integer := 32);
 		port(
