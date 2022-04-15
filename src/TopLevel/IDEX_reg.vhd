@@ -32,8 +32,8 @@ entity IDEX_reg is
 			--i_Jal		: in std_logic; -- Not needed?
 			i_Halt 		: in std_logic;
 
-			o_Rs		: out std_logic_vector(N-1 downto 0);
-			o_Rt		: out std_logic_vector(N-1 downto 0);
+			o_Rs		: out std_logic_vector(DATA_SELECT-1 downto 0);
+			o_Rt		: out std_logic_vector(DATA_SELECT-1 downto 0);
 			o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);
 			o_ReadRs	: out std_logic_vector(N-1 downto 0);
 			o_ReadRt	: out std_logic_vector(N-1 downto 0);
