@@ -14,9 +14,22 @@ use IEEE.std_logic_1164.all;
 
 package MIPS_types is
 
+  -- Instruction field width constants
+  constant FUNCT_WIDTH : integer := 6;
+  constant OPCODE_WIDTH : integer := 6;
+  constant JADDR_WIDTH : integer := 26;
+
+  -- Select bits to select from data_width
+  constant DATA_SELECT : integer := 5;
+
   -- Example Constants. Declare more as needed
   constant DATA_WIDTH : integer := 32;
   constant ADDR_WIDTH : integer := 10;
+
+  constant ALU_OP_WIDTH : integer := 4;
+
+  constant REGDST_WIDTH : integer := 2;
+  constant MEMTOREG_WIDTH : integer := 2;
 
   -- Example record type. Declare whatever types you need here
   type control_t is record
