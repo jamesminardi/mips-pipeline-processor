@@ -197,6 +197,16 @@ architecture structure of MIPS_Processor is
 			o_O 	: out std_logic_vector(N-1 downto 0));
 	end component;
 
+	component add_sub is --add feature
+		port(
+			iA		: in 	std_logic_vector(DATA_WIDTH - 1 downto 0);
+			iB		: in 	std_logic_vector(DATA_WIDTH-1 downto 0);
+			iSubtract: in   std_logic;
+			oSum	: out 	std_logic_vector(DATA_WIDTH-1 downto 0);
+			oCout2	: out	std_logic; -- Not needed: Cout before the last adder
+		 	oCout 	: out 	std_logic);
+	end component;
+
 	component fetch is
 		port(
 			i_Addr		: in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
@@ -265,8 +275,9 @@ signal s_MovnZero : std_logic;
 
 --------------------------  IF SIGNALS  --------------------------
 -- These signals go INTO IF/ID
-signal if_Inst    : std_logic_vector(N-1 downto 0);
-signal if_PCPlus4 : std_logic_vector(N-1 downto 0);
+signal if_Inst    	: std_logic_vector(N-1 downto 0);
+signal if_PCPlus4 	: std_logic_vector(N-1 downto 0);
+signal if_NewPC		: std_logic_vector(N-1 downto);
 
 --------------------------  ID SIGNALS  --------------------------
 -- From IF/ID and consumed
@@ -366,31 +377,45 @@ begin
   s_IMemAddr <= s_NextInstAddr when '0',
     iInstAddr when others;
 
-  PC: PC_reg
-    generic map(
-      N => DATA_WIDTH)
-    port map (
-      i_CLK => iCLK,
-      i_RST => iRST,
-      i_WE => '1',
-      i_D => if_PCPlus4,
-      o_Q => s_NextInstAddr);
 
-  IMem: mem
-    generic map(
-      ADDR_WIDTH => ADDR_WIDTH,
-      DATA_WIDTH => N)
-    port map(
-      clk  => iCLK,
-      addr => s_IMemAddr(11 downto 2),
-      data => iInstExt,
-      we   => iInstLd,
-      q    => s_Inst);
+	-- TODO: MUX
+
+
+	PC: PC_reg
+	generic map(
+		N => DATA_WIDTH)
+	port map (
+		i_CLK => iCLK,
+		i_RST => iRST,
+		i_WE => '1',
+		i_D => if_NewPC,
+		o_Q => s_NextInstAddr);
+
+
+	Add4: add_sub
+	port map (
+		iSubtract => '0',
+		iA		=> s_NextInstAddr, 		-- PC input
+		iB		=> x"00000004", -- 4
+		oSum	=> if_PCPlus4, 	-- PC plus 4
+		oCout2	=> open,
+		oCout	=> open);
+
+	IMem: mem
+	generic map(
+		ADDR_WIDTH => ADDR_WIDTH,
+		DATA_WIDTH => N)
+	port map(
+		clk  => iCLK,
+		addr => s_IMemAddr(11 downto 2),
+		data => iInstExt,
+		we   => iInstLd,
+		q    => s_Inst);
 
 	s_DMemAddr <= s_ALUResult;
 	s_DMemData <= s_ReadRt;
 
-  PC: PC_reg
+	PC: PC_reg
 	generic map(
 		N => DATA_WIDTH)
 	port map (

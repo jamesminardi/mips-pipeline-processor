@@ -7,7 +7,7 @@ use work.MIPS_types.all;
 
 entity fetch is
     port(
-		i_Addr   	: in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
+		i_PCPlus4   : in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
 		i_Jump   	: in std_logic; --input 0 or 1 for jump or not jump
 		i_JumpReg 	: in std_logic; -- jump reg instr or not
 		i_JumpRegData:in std_logic_vector(DATA_WIDTH - 1 downto 0);
@@ -16,14 +16,13 @@ entity fetch is
 		i_BEQ   	: in std_logic; --1 = Beq, 0 = Bne
 		i_BranchImm	: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 		i_JumpImm  	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
-		o_Addr   	: out std_logic_vector(DATA_WIDTH - 1 downto 0); --output address
-		o_PCPlus4	: out std_logic_vector(DATA_WIDTH - 1 downto 0));
+		o_Addr   	: out std_logic_vector(DATA_WIDTH - 1 downto 0)); --output address
 end fetch;
 
 architecture behavior of fetch is
 
 	
-	component mux2t1_N is --mux's
+	component mux2t1_N is
   	  	generic(N : integer);
   		port(
 		    i_S 	: in std_logic;
@@ -33,7 +32,7 @@ architecture behavior of fetch is
 	end component;
 
 	
-	component add_sub is --add feature
+	component add_sub is
 		port(
 			iA		: in 	std_logic_vector(DATA_WIDTH - 1 downto 0);
 			iB		: in 	std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -65,23 +64,20 @@ signal s_JRMuxtoJMux			: std_logic_vector(DATA_WIDTH - 1 downto 0); -- Either Br
 -- signal s_Br0AND			: std_logic_vector(DATA_WIDTH - 1 downto 0); -- Brnach AND with zero
 -- signal s_BrN0AND		: std_logic_vector(DATA_WIDTH - 1 downto 0); -- Branch AND with not zero
 -- signal s_Br_Control		: std_logic_vector(DATA_WIDTH - 1 downto 0); -- or result of Br0AND and BrN0AND
+signal s_ShifterA : std_logic_vector(DATA_WIDTH -1 downto 0);
+signal s_JRMuxSelect : std_logic;
 
 begin 
 	--generic(int : integer := 4);
 	--G_NBit_MUX: for i in 0 to 31 generate -- there are 32 registers that will be tried in the mux
 	
-	Add4: add_sub
-	port map (
-		iSubtract => '0',
-		iA		=> i_Addr, 		-- PC input
-		iB		=> x"00000004", -- 4
-		oSum	=> s_PCPlus4, 	-- PC plus 4
-		oCout2	=> open,
-		oCout	=> open);
+	s_PCPlus4 <= i_PCPlus4;
 
+
+	s_ShifterA <= "000000" & i_JumpImm;
 	Shift_JAddr: barrel_shifter
 	port map (
-		iA         		=> "000000" & i_JumpImm,
+		iA         		=> s_ShifterA,
 		iLeft      		=> '1',
 		iArithmetic		=> '0',
 		iShamt     		=> "00010",
@@ -107,38 +103,13 @@ begin
 		oCout2		 => open,
 		oCout 		 => open);
 	
-	-- Branches_And: andg2
-	-- --anding the two branch inputs
-	-- port map (
-	-- 	i_A			=> i_Branch,
-	-- 	i_B			=> i_BEQ,
-	-- 	o_F			=> s_BranchAND);
-	-- B_And_0: andg2
-	-- -- anding the previous with ALU zero
-	-- port map (
-	-- 	i_A         => s_BranchAND,
-	-- 	i_B         => i_Zero,
-	-- 	o_F         => s_Br0AND);
-
-	-- B_And_not_0: andg2
-	-- -- anding branches and and not zero
-	-- port map (
-	-- 	i_A          => s_BranchAND, 
-	-- 	i_B          => not i_Zero,
-	-- 	o_F          => s_BrN0AND);
-
-	-- Branches_OR: org2
-	-- -- oring the previous two and results
-	-- port(
-	-- 	i_A          => s_Br0AND
-	-- 	i_B          => s_BrN0AND
-	-- 	o_F          => s_Br_Control);	
+	s_JRMuxSelect <= (i_Branch AND i_BEQ AND i_Zero) OR (i_Branch AND (NOT i_BEQ) AND (NOT i_Zero)); -- control is determined by branch and then BNE/BEQ
 
 	B_MUX: mux2t1_N
 	--determines if we are branching or not
 	generic map(N => DATA_WIDTH)
 	port map (
-		i_S          => (i_Branch AND i_BEQ AND i_Zero) OR (i_Branch AND (NOT i_BEQ) AND (NOT i_Zero)), -- control is determined by branch and then BNE/BEQ
+		i_S          => s_JRMuxSelect,
 		i_D0         => s_PCPlus4, -- 0 = result of add4
 	    i_D1         => s_BranchTarget, -- 1 = result of add alu (add4 + shifted sign ext)
 		o_O          => s_BMuxtoJRMux);	-- goes to jump mux
@@ -159,8 +130,5 @@ begin
    	    i_D0         => s_JRMuxtoJMux, --0 = result of the branch mux
         i_D1         => s_JumpTarget, --1 = jump addr (31-0)
 	    o_O          => o_Addr); --output goes to PC (next inst addr in processor)
-
-
-	o_PCPlus4 <= s_PCPlus4;
 
 end behavior;
