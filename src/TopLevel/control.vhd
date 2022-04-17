@@ -43,6 +43,8 @@ architecture dataflow of control is
 
 signal s_JumpCheck : std_logic;
 signal s_JumpReg : std_logic;
+signal s_oALUOp : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
+signal s_Action : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
 
     -- Doesn't include JAL & others
 begin
@@ -126,7 +128,7 @@ begin
             '0' when "000101", -- BNE
             '0' when others;
     with iOpcode select
-        oALUOp <=
+	s_oALUOp <=
             "1111" when "000000", -- Funct
             "0000" when "001000", -- addi
             "0010" when "001001", -- addiu
@@ -152,5 +154,26 @@ begin
             '0' when others;
     
     oJumpReg <= s_JumpReg;
+
+    with iFunct select
+        s_Action <=
+        "0000" when "100000", -- Add
+        "0010" when "100001", -- Add (U)
+        "0001" when "100010", -- Sub
+        "0011" when "100011", -- Sub (U)
+        "0100" when "100100", -- And
+        "0101" when "100101", -- Or
+        "0110" when "100111", -- Nor
+        "0111" when "100110", -- Xor
+        "1000" when "000000", -- SLL
+        "1010" when "000010", -- SRL
+        "1011" when "000011", -- SRA
+        "1101" when "101010", -- SLT
+        "1110" when "001011", -- MOVN
+        "0000" when others;
+    with s_oALUOp select
+        oALUOp <=
+        s_Action when "1111", -- Funct if Opcode == "000000"
+        s_oALUOp when others; -- Use OPcode instruction if opcode != "000000"
 
 end dataflow;
