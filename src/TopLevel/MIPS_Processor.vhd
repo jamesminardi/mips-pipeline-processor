@@ -75,8 +75,6 @@ architecture structure of MIPS_Processor is
 			i_RST		: in std_logic;	-- Reset input
 			i_WE		: in std_logic;	-- Write enable
 
-			i_Rs		: in std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rs
-			i_Rt		: in std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rt
 			i_Rd		: in std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
 			i_ReadRs	: in std_logic_vector(N-1 downto 0);	-- Read Rs
 			i_ReadRt	: in std_logic_vector(N-1 downto 0);	-- Read Rt
@@ -85,44 +83,66 @@ architecture structure of MIPS_Processor is
 			i_ALUSrc	: in std_logic; -- Choose ALU B to be immediate or Read Rt
 			i_ALUOp		: in std_logic_vector(ALU_OP_WIDTH-1 downto 0);	-- Choose ALU instruction
 			i_Shamt		: in std_logic_vector(DATA_SELECT-1 downto 0);
-			i_SignExt	: in std_logic;
 			i_MemWrite 	: in std_logic;
 			i_MemRead 	: in std_logic;
 			i_MemtoReg	: in std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
 			i_RegWrite	: in std_logic;
-			i_RegDst	: in std_logic_vector(REGDST_WIDTH - 1 downto 0);
 			i_Movn		: in std_logic;
-			--i_Jal		: in std_logic; -- Not needed?
 			i_Halt 		: in std_logic;
-
-			o_Rs		: out std_logic_vector(N-1 downto 0);
-			o_Rt		: out std_logic_vector(N-1 downto 0);
-			o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);
-			o_ReadRs	: out std_logic_vector(N-1 downto 0);
-			o_ReadRt	: out std_logic_vector(N-1 downto 0);
-			o_Imm32		: out std_logic_vector(N-1 downto 0);
-			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
-			o_ALUSrc	: out std_logic;
-			o_ALUOp		: out std_logic_vector(ALU_OP_WIDTH-1 downto 0);
+			i_Branch	: in std_logic;
+			i_BranchEq	: in std_logic;
+			i_JumpReg	: in std_logic;
+			i_Jump		: in std_logic;
+			i_JumpImm	: in std_logic;
+			i_Zero		: in std_logic;
+			i_ALUResult : in std_logic_vector(N-1 downto 0);
+			
+			o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
+			o_ReadRs	: out std_logic_vector(N-1 downto 0);	-- Read Rs
+			o_ReadRt	: out std_logic_vector(N-1 downto 0);	-- Read Rt
+			o_Imm32		: out std_logic_vector(N-1 downto 0);	-- Immediate (32b)
+			o_PCPlus4	: out std_logic_vector(N-1 downto 0);	-- PC + 4
+			o_ALUSrc	: out std_logic; -- Choose ALU B to be immediate or Read Rt
+			o_ALUOp		: out std_logic_vector(ALU_OP_WIDTH-1 downto 0);	-- Choose ALU instruction
 			o_Shamt		: out std_logic_vector(DATA_SELECT-1 downto 0);
-			o_SignExt	: out std_logic;
 			o_MemWrite 	: out std_logic;
 			o_MemRead 	: out std_logic;
-			o_MemtoReg 	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
-			o_RegWrite 	: out std_logic;
-			o_RegDst 	: out std_logic_vector(REGDST_WIDTH - 1 downto 0);
-			o_Movn 		: out std_logic;
-			--o_Jal 	: out std_logic;
-			o_Halt 		: out std_logic);
+			o_MemtoReg	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
+			o_RegWrite	: out std_logic;
+			o_Movn		: out std_logic;
+			o_Halt 		: out std_logic;
+			o_Branch	: out std_logic;
+			o_BranchEq	: out std_logic;
+			o_JumpReg	: out std_logic;
+			o_Jump		: out std_logic;
+			o_JumpImm	: out std_logic;
+			o_Zero		: out std_logic;
+			o_ALUResult : out std_logic_vector(N-1 downto 0));
 	end component;
 
-  -- component EXMEM_reg is
-  --   generic(N : integer := 32);
-  --     port(
-  --       i_CLK		: in std_logic;	-- Clock input
-  --       i_RST		: in std_logic;	-- Reset input
-  --       i_WE		: in std_logic;	-- Write enable
-  -- end component;
+	component EXMEM_reg is
+		generic(N : integer := 32);
+		port(
+			i_CLK		: in std_logic;	-- Clock input
+			i_RST		: in std_logic;	-- Reset input
+			i_WE		: in std_logic;	-- Write enable
+
+			i_Rd		: in std_logic;
+			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
+			i_MemtoReg	: in std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
+			i_DMemOut	: in std_logic_vector(N-1 downto 0);
+			i_RegWrite	: in std_logic;
+			i_Halt 		: in std_logic;
+			i_ALUResult : in std_logic_vector(N-1 downto 0);
+
+			o_Rd		: out std_logic;
+			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
+			o_MemtoReg 	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
+			o_DMemOut	: out std_logic_vector(N-1 downto 0);
+			o_RegWrite 	: out std_logic;
+			o_Halt 		: out std_logic;
+			o_ALUResult : out std_logic_vector(N-1 downto 0));
+  	end component;
 
   -- component MEMWB_reg is
   --   generic(N : integer := 32);
@@ -173,7 +193,8 @@ architecture structure of MIPS_Processor is
 			oBranch     : out std_logic; -- Helps select using PC+4 or branch address by being Anded with ALU Zero
 			oBranchEQ   : out std_logic; -- Determines if BEQ or BNE
 			oALUOp      : out std_logic_vector(ALU_OP_WIDTH - 1 downto 0); -- Selects ALU operation or to select from funct field
-			oHalt		: out std_logic); -- Halt port
+			oHalt		: out std_logic;
+			oPCSrc		: out std_logic); -- Halt port
 	end component;
 
 	component ALU is
@@ -289,62 +310,66 @@ signal id_Funct	: std_logic_vector(FUNCT_WIDTH  - 1 downto 0); -- Funct code
 signal id_Imm16	: std_logic_vector(DATA_WIDTH/2 - 1 downto 0); -- Imm field for I-type instruction
 signal id_Addr  : std_logic_vector(JADDR_WIDTH  - 1 downto 0); -- Addr width for jump instruction
 -- Created instruction signals from control not passed on
-signal id_SignExt     : std_logic;
-signal id_Jump        : std_logic;
-signal id_JumpReg     : std_logic;
-signal id_Branch      : std_logic;
-signal id_BEQ         : std_logic;
+signal id_SignExt 	: std_logic;
+
+-- Go to IF/ID
+signal id_PCSrc		: std_logic;
 
 -- These signals go INTO ID/EX
-signal id_Rs       : std_logic_vector(DATA_SELECT-1 downto 0);
-signal id_Rt       : std_logic_vector(DATA_SELECT-1 downto 0);
-signal id_Rd       : std_logic_vector(DATA_SELECT-1 downto 0);
-signal id_ReadRs   : std_logic_vector(N-1 downto 0);
-signal id_ReadRt   : std_logic_vector(N-1 downto 0);
-signal id_Imm32    : std_logic_vector(N-1 downto 0);
-signal id_PCPlus4  : std_logic_vector(N-1 downto 0);
-signal id_ALUSrc   : std_logic;
-signal id_ALUOp    : std_logic_vector(ALU_OP_WIDTH-1 downto 0);
-signal id_Shamt    : std_logic_vector(DATA_SELECT-1 downto 0);
-signal id_SignExt  : std_logic;
-signal id_MemWrite : std_logic;
-signal id_MemRead  : std_logic;
-signal id_MemtoReg : std_logic_vector(MEMTOREG_WIDTH-1 downto 0);
-signal id_RegWrite : std_logic;
-signal id_RegDst   : std_logic_vector(REGDST_WIDTH-1 downto 0);
-signal id_Movn     : std_logic;
---signal id_Jal    : std_logic;
-signal id_Halt     : std_logic;
+signal id_Rd       	: std_logic_vector(DATA_SELECT-1 downto 0);
+signal id_ReadRs   	: std_logic_vector(N-1 downto 0);
+signal id_ReadRt   	: std_logic_vector(N-1 downto 0);
+signal id_Imm32    	: std_logic_vector(N-1 downto 0);
+signal id_PCPlus4  	: std_logic_vector(N-1 downto 0);
+signal id_ALUSrc   	: std_logic;
+signal id_ALUOp    	: std_logic_vector(ALU_OP_WIDTH-1 downto 0);
+signal id_Shamt    	: std_logic_vector(DATA_SELECT-1 downto 0);
+signal id_MemWrite 	: std_logic;
+signal id_MemRead  	: std_logic;
+signal id_MemtoReg 	: std_logic_vector(MEMTOREG_WIDTH-1 downto 0);
+signal id_RegWrite 	: std_logic;
+signal id_Movn     	: std_logic;
+signal id_Halt     	: std_logic;
+signal id_Branch	: std_logic;
+signal id_BranchEq	: std_logic;
+signal id_JumpReg	: std_logic;
+signal id_Jump		: std_logic;
+signal id_JumpImm	: std_logic;
 
 --------------------------  EX SIGNALS  --------------------------
 -- From ID/EX and consumed
-signal ex_Rs       : std_logic_vector(DATA_SELECT-1 downto 0);
-signal ex_Rt       : std_logic_vector(DATA_SELECT-1 downto 0);
 signal ex_Rd       : std_logic_vector(DATA_SELECT-1 downto 0);
 signal ex_ReadRs   : std_logic_vector(N-1 downto 0);
 signal ex_Imm32    : std_logic_vector(N-1 downto 0);
 signal ex_ALUSrc   : std_logic;
 signal ex_ALUOp    : std_logic_vector(ALU_OP_WIDTH-1 downto 0);
 signal ex_Shamt    : std_logic_vector(DATA_SELECT-1 downto 0);
-signal ex_SignExt  : std_logic;
+signal ex_Zero		: std_logic;
 
 -- These signals go INTO EX/MEM
+signal ex_ReadRs	: std_logic_vector(N-1 downto 0);
 signal ex_ReadRt	  : std_logic_vector(N-1 downto 0);
 signal ex_PCPlus4	  : std_logic_vector(N-1 downto 0);
 signal ex_MemWrite 	: std_logic;
 signal ex_MemRead 	: std_logic;
 signal ex_MemtoReg	: std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
 signal ex_RegWrite	: std_logic;
-signal ex_RegDst	  : std_logic_vector(REGDST_WIDTH - 1 downto 0);
 signal ex_Movn		  : std_logic;
--- signal ex i_Jal	: std_logic;
 signal ex_Halt 		  : std_logic;
+signal ex_Branch	:  std_logic;
+signal ex_BranchEQ	:  std_logic;
+signal ex_JumpReg	:  std_logic;
+signal ex_Jump		:  std_logic;
+signal ex_JumpImm	:  std_logic;
+signal ex_ALUResult : std_logic_vector(N-1 downto 0);
 
 --------------------------  MEM SIGNALS  --------------------------
 -- From EX/MEM reg and consumed
 signal mem_ReadRt	  : std_logic_vector(N-1 downto 0);
 signal mem_MemWrite : std_logic;
 signal mem_MemRead 	: std_logic;
+
+signal mem_ALUResult : std_logic_vector(N-1 downto 0);
 
 -- These signals go INTO MEM/WB
 signal mem_PCPlus4	: std_logic_vector(N-1 downto 0);
@@ -357,6 +382,16 @@ signal mem_Halt 		: std_logic;
 --------------------------  WB SIGNALS  --------------------------
 -- From MEM/WB reg and consumed
 -- These signals go INTO IF/ID
+
+
+i_Rd		: in std_logic;
+i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
+i_MemtoReg	: in std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
+i_DMemOut	: in std_logic_vector(N-1 downto 0);
+i_RegWrite	: in std_logic;
+i_Halt 		: in std_logic;
+i_ALUResult : in std_logic_vector(N-1 downto 0);
+
 signal wb_ReadRt : std_logic_vector(N-1 downto 0);
 signal wb_PCPlus4 : std_logic_vector(N-1 downto 0);
 signal wb_MemWrite : 
@@ -379,7 +414,9 @@ begin
 
 
 	-- TODO: MUX
-
+	with id_PCSrc select
+		mem_NewPC
+		if_PCPlus4 when others;
 
 	PC: PC_reg
 	generic map(
@@ -525,8 +562,6 @@ begin
         i_RST => iRST,
         i_WE => '1',
   
-        i_Rs      => id_Rs,
-        i_Rt      => id_Rt,
         i_Rd      => id_Rd,
         i_ReadRs  => id_ReadRs,
         i_ReadRt  => id_ReadRt,
@@ -535,17 +570,18 @@ begin
         i_ALUSrc  => id_ALUSrc,
         i_ALUOp   => id_ALUOp,
         i_Shamt   => id_Shamt,
-        i_SignExt => id_SignExt,
         i_MemWrite=> id_MemWrite,
         i_MemRead => id_MemRead,
         i_MemtoReg=> id_MemtoReg,
         i_RegWrite=> id_RegWrite,
-        i_RegDst  => id_RegDst,
         i_Movn    => id_Movn,
         i_Halt    => id_Halt,
+		i_Branch	=> id_Branch,
+		i_BranchEq	=> id_BranchEQ,
+		i_JumpReg	=> id_JumpReg,
+		i_Jump		=> id_Jump,
+		i_JumpImm	=> id_JumpImm,
   
-        o_Rs      => ex_Rs,
-        o_Rt      => ex_Rt,
         o_Rd      => ex_Rd,
         o_ReadRs  => ex_ReadRs,
         o_ReadRt  => ex_ReadRt,
@@ -554,14 +590,17 @@ begin
         o_ALUSrc  => ex_ALUSrc,
         o_ALUOp   => ex_ALUOp,
         o_Shamt   => ex_Shamt,
-        o_SignExt => ex_SignExt,
         o_MemWrite=> ex_MemWrite,
         o_MemRead => ex_MemRead,
         o_MemtoReg=> ex_MemtoReg,
         o_RegWrite=> ex_RegWrite,
-        o_RegDst  => ex_RegDst,
         o_Movn    => ex_Movn,
-        o_Halt    => ex_Halt);
+        o_Halt    => ex_Halt,
+		o_Branch	=> ex_Branch,
+		o_BranchEq	=> ex_BranchEQ,
+		o_JumpReg	=> ex_JumpReg,
+		o_Jump		=> ex_Jump,
+		o_JumpImm	=> ex_JumpImm,);
   
   ALUSrc_mux: mux2t1_N
 	generic map(

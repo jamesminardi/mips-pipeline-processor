@@ -12,21 +12,21 @@ entity EXMEM_reg is
 			i_RST		: in std_logic;	-- Reset input
 			i_WE		: in std_logic;	-- Write enable
 
+			i_Rd		: in std_logic;
 			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
 			i_MemtoReg	: in std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
+			i_DMemOut	: in std_logic_vector(N-1 downto 0);
 			i_RegWrite	: in std_logic;
-			i_RegDst	: in std_logic_vector(REGDST_WIDTH - 1 downto 0);
-			i_Movn		: in std_logic;
-			--i_Jal		: in std_logic; -- Not needed?
 			i_Halt 		: in std_logic;
+			i_ALUResult : in std_logic_vector(N-1 downto 0);
 
+			o_Rd		: out std_logic;
 			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
 			o_MemtoReg 	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
+			o_DMemOut	: out std_logic_vector(N-1 downto 0);
 			o_RegWrite 	: out std_logic;
-			o_RegDst 	: out std_logic_vector(REGDST_WIDTH - 1 downto 0);
-			o_Movn 		: out std_logic;
-			--o_Jal 	: out std_logic;
-			o_Halt 		: out std_logic);
+			o_Halt 		: out std_logic;
+			o_ALUResult : out std_logic_vector(N-1 downto 0));
 end EXMEM_reg;
 
 architecture behavior of EXMEM_reg is
