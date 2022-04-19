@@ -25,8 +25,9 @@ entity EXMEM_reg is
 			i_BranchEQ	: in std_logic;
 			i_JumpReg	: in std_logic;
 			i_Jump		: in std_logic;
-			i_JumpImm	: in std_logic;
+			i_JumpImm	: in std_logic_vector(JADDR_WIDTH-1 downto 0);
 			i_Zero		: in std_logic;
+			i_Imm32		: in std_logic_vector(N-1 downto 0);	-- Immediate (32b)
 			i_ALUResult : in std_logic_vector(N-1 downto 0);
 
 			o_ReadRs	: out std_logic_vector(N-1 downto 0); --------
@@ -42,8 +43,9 @@ entity EXMEM_reg is
 			o_BranchEQ	: out std_logic;
 			o_JumpReg	: out std_logic;
 			o_Jump		: out std_logic;
-			o_JumpImm	: out std_logic;
+			o_JumpImm	: out std_logic_vector(JADDR_WIDTH-1 downto 0);
 			o_Zero		: out std_logic;
+			o_Imm32		: out std_logic_vector(N-1 downto 0);	-- Immediate (32b)
 			o_ALUResult : out std_logic_vector(N-1 downto 0));
 end EXMEM_reg;
 
@@ -72,6 +74,18 @@ begin
 				i_D		=> i_ReadRs(i),
 				o_Q		=> o_ReadRs(i));
 	end generate g_ReadRs;
+
+	-- Imm32
+	g_Imm32: for i in 0 to N-1 generate
+	Imm32_i: dffg_N
+			generic map (N => N)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_Imm32(i),
+				o_Q		=> o_Imm32(i));
+	end generate g_Imm32;
 
 	-- ReadRt
 	g_ReadRt: for i in 0 to N-1 generate
@@ -145,18 +159,6 @@ begin
 				o_Q		=> o_RegWrite);
 	end generate g_RegWrite;
 
-	-- RegDst
-	g_RegDst: for i in 0 to REGDST_WIDTH-1 generate
-	RegDst_i: dffg_N
-			generic map (N => REGDST_WIDTH)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_RegDst(i),
-				o_Q		=> o_RegDst(i));
-	end generate g_RegDst;
-
 	-- Movn
 	g_Movn: for i in 0 to 1-1 generate
 	Movn_i: dffg_N
@@ -228,17 +230,17 @@ begin
 				i_D		=> i_Jump,
 				o_Q		=> o_Jump);
 	end generate g_Jump;
-
+	
 	-- JumpImm
-	g_JumpImm: for i in 0 to 1-1 generate
+	g_JumpImm: for i in 0 to JADDR_WIDTH-1 generate
 	JumpImm_i: dffg_N
-			generic map (N => 1)
+			generic map (N => JADDR_WIDTH)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
 				i_WE	=> i_WE,
-				i_D		=> i_JumpImm,
-				o_Q		=> o_JumpImm);
+				i_D		=> i_JumpImm(i),
+				o_Q		=> o_JumpImm(i));
 	end generate g_JumpImm;
 
 	-- Zero
@@ -262,7 +264,7 @@ begin
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
 				i_WE	=> i_WE,
-				i_D		=> i_ALUResult,
-				o_Q		=> o_ALUResult);
+				i_D		=> i_ALUResult(i),
+				o_Q		=> o_ALUResult(i));
 	end generate g_ALUResult;
 end behavior;

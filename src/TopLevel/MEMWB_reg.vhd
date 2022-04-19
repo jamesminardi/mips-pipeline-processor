@@ -12,7 +12,7 @@ entity EXMEM_reg is
 			i_RST		: in std_logic;	-- Reset input
 			i_WE		: in std_logic;	-- Write enable
 
-			i_Rd		: in std_logic;
+			i_Rd		: in std_logic_vector(DATA_SELECT - 1 downto 0);
 			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
 			i_MemtoReg	: in std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
 			i_DMemOut	: in std_logic_vector(N-1 downto 0);
@@ -43,6 +43,20 @@ architecture behavior of EXMEM_reg is
 
 begin
 
+
+	-- Rd
+	g_Rd: for i in 0 to DATA_SELECT-1 generate
+	Rd_i: dffg_N
+			generic map (N => DATA_SELECT)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_Rd(i),
+				o_Q		=> o_Rd(i));
+	end generate g_Rd;
+
+
 	-- PCPlus4
 	g_PCPlus4: for i in 0 to N-1 generate
 	PCPlus4_i: dffg_N
@@ -67,6 +81,19 @@ begin
 				o_Q		=> o_MemtoReg(i));
 	end generate g_MemtoReg;
 
+
+	-- DMemOut
+	g_DMemOut: for i in 0 to N-1 generate
+	DMemOut_i: dffg_N
+			generic map (N => N)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_DMemOut(i),
+				o_Q		=> o_DMemOut(i));
+	end generate g_DMemOut;
+
 	-- RegWrite
 	g_RegWrite: for i in 0 to 1-1 generate
 	RegWrite_i: dffg_N
@@ -79,42 +106,6 @@ begin
 				o_Q		=> o_RegWrite);
 	end generate g_RegWrite;
 
-	-- RegDst
-	g_RegDst: for i in 0 to REGDST_WIDTH-1 generate
-	RegDst_i: dffg_N
-			generic map (N => REGDST_WIDTH)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_RegDst(i),
-				o_Q		=> o_RegDst(i));
-	end generate g_RegDst;
-
-	-- Movn
-	g_Movn: for i in 0 to 1-1 generate
-	Movn_i: dffg_N
-			generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_Movn,
-				o_Q		=> o_Movn);
-	end generate g_Movn;
-
-	-- -- Jal
-	-- g_Jal: for i in 0 to 1-1 generate
-	-- Jal_i: dffg_N
-	-- 		generic map (N => 1)
-	-- 		port map (
-	-- 			i_CLK	=> i_CLK,
-	-- 			i_RST	=> i_RST,
-	-- 			i_WE	=> i_WE,
-	-- 			i_D		=> i_Jal,
-	-- 			o_Q		=> o_Jal);
-	-- end generate g_Jal;
-
 	-- Halt
 	g_Halt: for i in 0 to 1-1 generate
 	Halt_i: dffg_N
@@ -126,4 +117,17 @@ begin
 				i_D		=> i_Halt,
 				o_Q		=> o_Halt);
 	end generate g_Halt;
+
+
+	-- ALUResult
+	g_ALUResult: for i in 0 to N-1 generate
+	ALUResult_i: dffg_N
+			generic map (N => N)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_ALUResult,
+				o_Q		=> o_ALUResult);
+	end generate g_ALUResult;
 end behavior;

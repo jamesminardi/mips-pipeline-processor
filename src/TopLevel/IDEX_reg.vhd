@@ -295,30 +295,4 @@ begin
 				o_Q		=> o_JumpImm);
 	end generate g_JumpImm;
 
-
-	-- Zero
-	g_Zero: for i in 0 to 1-1 generate
-	Zero_i: dffg_N
-			generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_Zero,
-				o_Q		=> o_Zero);
-	end generate g_Zero;
-
-
-	-- ALUResult
-	g_ALUResult: for i in 0 to N-1 generate
-	ALUResult_i: dffg_N
-			generic map (N => N)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_ALUResult,
-				o_Q		=> o_ALUResult);
-	end generate g_ALUResult;
-
 end behavior;

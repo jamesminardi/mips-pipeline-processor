@@ -21,8 +21,8 @@ entity control is
     port (
         iOpcode     : in std_logic_vector(OPCODE_WIDTH -1 downto 0); -- 6 MSB of 32bit instruction
         iFunct      : in std_logic_vector(OPCODE_WIDTH - 1 downto 0); -- only for JR
-        -- iALUZero : in std_logic; -- TODO: Zero flag from ALU for PC src?
-        -- oPCSrc : in std_logic; -- TODO: Selects using PC+4 or branch addy
+        -- iALUZero : out std_logic; -- TODO: Zero flag from ALU for PC src?
+        oPCSrc 		: out std_logic; -- TODO: Selects using PC+4 or branch addy
         oRegDst     : out std_logic_vector(REGDST_WIDTH  - 1 downto 0); -- Selects r-type vs i-type vs R31 write register
         oALUSrc     : out std_logic; -- Selects source for second ALU input (Rt vs Imm)
         oMemtoReg   : out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0); -- Selects ALU result vs memory result vs PC+4 to reg write
@@ -45,11 +45,13 @@ signal s_JumpCheck : std_logic;
 signal s_JumpReg : std_logic;
 signal s_oALUOp : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
 signal s_Action : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
+signal s_PCSrc : std_logic;
+signal s_OpcodeFunct : std_logic_vector(11 downto 0);
 
     -- Doesn't include JAL & others
 begin
 
-
+	s_OpcodeFunct <= iOpcode & iFunct;
     with iOpcode select
         oRegDst <=
             "00" when "001000",  -- Addi
@@ -74,7 +76,7 @@ begin
             "10" when "000011",  -- jal
             "00" when others;
 
-    with (iOpcode & iFunct) select
+    with (s_OpcodeFunct) select
         s_JumpReg <=
             '1' when "000000001000",
             '0' when others;
@@ -148,12 +150,24 @@ begin
             '1' when "010100",
             '0' when others;
 
-    with (iOpcode & iFunct) select
+    with s_OpcodeFunct select
         oMovn <=
             '1' when "000000001011",
             '0' when others;
     
     oJumpReg <= s_JumpReg;
+
+	with iOpcode select
+		s_PCSrc <=
+			'1' when "000100",
+			'1' when "000101",
+			'1' when "000010",
+			'1' when "000011",
+			'0' when others;
+	with s_OpcodeFunct select
+		oPCSrc <=
+			'1' when "000000001000",
+			s_PCSrc when others;
 
     with iFunct select
         s_Action <=
