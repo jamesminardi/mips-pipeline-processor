@@ -212,7 +212,7 @@ architecture structure of MIPS_Processor is
 			iOpcode     : in std_logic_vector(OPCODE_WIDTH -1 downto 0); -- 6 MSB of 32bit instruction
 			iFunct      : in std_logic_vector(OPCODE_WIDTH - 1 downto 0); -- only for JR
 			-- iALUZero : in std_logic; -- TODO: Zero flag from ALU for PC src?
-			oPCSrc 		: in std_logic; -- TODO: Selects using PC+4 or branch addy
+			oPCSrc 		: out std_logic; -- TODO: Selects using PC+4 or branch addy
 			oRegDst     : out std_logic_vector(REGDST_WIDTH - 1 downto 0); -- Selects r-type vs i-type write register
 			oALUSrc     : out std_logic; -- Selects source for second ALU input (Rt vs Imm)
 			oMemtoReg   : out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0); -- Selects ALU result or memory result to reg write
@@ -262,7 +262,7 @@ architecture structure of MIPS_Processor is
 
 	component fetch is
 		port(
-			i_Addr		: in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
+			i_PCPlus4		: in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
 			i_Jump		: in std_logic; --input 0 or 1 for jump or not jump
 			i_JumpReg	: in std_logic; -- jump register instr or not
 			i_JumpRegData: in std_logic_vector(DATA_WIDTH - 1 downto 0);
@@ -271,8 +271,7 @@ architecture structure of MIPS_Processor is
 			i_BEQ   : in std_logic; --input 0 or 1 for branchEQ or BNE
 			i_BranchImm	: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 			i_JumpImm	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
-			o_Addr		: out std_logic_vector(DATA_WIDTH - 1 downto 0);
-			o_PCPlus4	: out std_logic_vector(DATA_WIDTH - 1 downto 0));
+			o_Addr		: out std_logic_vector(DATA_WIDTH - 1 downto 0));
 	end component;
 
 
@@ -727,7 +726,7 @@ begin
 
 	Fetch_Unit: fetch
 	port map(
-		i_Addr		  	=> mem_PCPlus4,
+		i_PCPlus4	  	=> mem_PCPlus4,
 		i_Jump		  	=> mem_Jump,
 		i_JumpReg	  	=> mem_JumpReg,
 		i_JumpRegData	=> mem_ReadRs,
@@ -737,6 +736,7 @@ begin
 		i_BranchImm		=> mem_Imm32,
 		i_JumpImm	  	=> mem_JumpImm,
 		o_Addr		  	=> mem_NewPC);
+
 
   --------------------------  WRITE BACK (WB) STAGE  --------------------------	
   MEMWB: MEMWB_reg

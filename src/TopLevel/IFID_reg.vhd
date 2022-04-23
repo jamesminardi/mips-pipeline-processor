@@ -19,8 +19,7 @@ end IFID_reg;
 
 architecture behavior of IFID_reg is
 
-	component dffg_N is
-		generic(N : integer := 32);
+	component dffg is
 		port(
 			i_CLK        : in std_logic;     -- Clock input
 			i_RST        : in std_logic;     -- Reset input
@@ -32,8 +31,7 @@ architecture behavior of IFID_reg is
 begin
 	-- Instruction [31:0]
 	g_Inst: for i in 0 to N-1 generate
-		Inst_i: dffg_N 
-			generic map (N => N)
+		Inst_i: dffg 
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -44,8 +42,7 @@ begin
 
 	-- PC + 4 [31:0]
 	g_PCPlus4: for i in 0 to N-1 generate
-		PCPlus4_i: dffg_N
-			generic map (N => N)
+		PCPlus4_i: dffg
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,

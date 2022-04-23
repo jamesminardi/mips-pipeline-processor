@@ -5,7 +5,7 @@ use IEEE.std_logic_1164.all;
 library work;
 use work.MIPS_types.all;
 
-entity EXMEM_reg is
+entity MEMWB_reg is
 	generic(N : integer := 32);
 		port(
 			i_CLK		: in std_logic;	-- Clock input
@@ -20,19 +20,19 @@ entity EXMEM_reg is
 			i_Halt 		: in std_logic;
 			i_ALUResult : in std_logic_vector(N-1 downto 0);
 
-			o_Rd		: out std_logic;
+			o_Rd		: out std_logic_vector(DATA_SELECT - 1 downto 0);
 			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
 			o_MemtoReg 	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
 			o_DMemOut	: out std_logic_vector(N-1 downto 0);
 			o_RegWrite 	: out std_logic;
 			o_Halt 		: out std_logic;
 			o_ALUResult : out std_logic_vector(N-1 downto 0));
-end EXMEM_reg;
+end MEMWB_reg;
 
-architecture behavior of EXMEM_reg is
+architecture behavior of MEMWB_reg is
 
-	component dffg_N is
-		generic(N : integer := 32);
+	component dffg is
+		--generic(N : integer := 32);
 		port(
 			i_CLK        : in std_logic;     -- Clock input
 			i_RST        : in std_logic;     -- Reset input
@@ -46,8 +46,8 @@ begin
 
 	-- Rd
 	g_Rd: for i in 0 to DATA_SELECT-1 generate
-	Rd_i: dffg_N
-			generic map (N => DATA_SELECT)
+	Rd_i: dffg
+			--generic map (N => DATA_SELECT)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -59,8 +59,8 @@ begin
 
 	-- PCPlus4
 	g_PCPlus4: for i in 0 to N-1 generate
-	PCPlus4_i: dffg_N
-			generic map (N => N)
+	PCPlus4_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -71,8 +71,8 @@ begin
 
 	-- MemtoReg
 	g_MemtoReg: for i in 0 to MEMTOREG_WIDTH-1 generate
-	MemtoReg_i: dffg_N
-			generic map (N => MEMTOREG_WIDTH)
+	MemtoReg_i: dffg
+			--generic map (N => MEMTOREG_WIDTH)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -84,8 +84,8 @@ begin
 
 	-- DMemOut
 	g_DMemOut: for i in 0 to N-1 generate
-	DMemOut_i: dffg_N
-			generic map (N => N)
+	DMemOut_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -96,8 +96,8 @@ begin
 
 	-- RegWrite
 	g_RegWrite: for i in 0 to 1-1 generate
-	RegWrite_i: dffg_N
-			generic map (N => 1)
+	RegWrite_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -108,8 +108,8 @@ begin
 
 	-- Halt
 	g_Halt: for i in 0 to 1-1 generate
-	Halt_i: dffg_N
-			generic map (N => 1)
+	Halt_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -121,13 +121,13 @@ begin
 
 	-- ALUResult
 	g_ALUResult: for i in 0 to N-1 generate
-	ALUResult_i: dffg_N
-			generic map (N => N)
+	ALUResult_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
 				i_WE	=> i_WE,
-				i_D		=> i_ALUResult,
-				o_Q		=> o_ALUResult);
+				i_D		=> i_ALUResult(i),
+				o_Q		=> o_ALUResult(i));
 	end generate g_ALUResult;
 end behavior;

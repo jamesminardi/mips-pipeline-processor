@@ -51,8 +51,7 @@ end EXMEM_reg;
 
 architecture behavior of EXMEM_reg is
 
-	component dffg_N is
-		generic(N : integer := 32);
+	component dffg is
 		port(
 			i_CLK        : in std_logic;     -- Clock input
 			i_RST        : in std_logic;     -- Reset input
@@ -65,8 +64,8 @@ begin
 
 	-- ReadRs
 	g_ReadRs: for i in 0 to N-1 generate
-		ReadRs_i: dffg_N
-			generic map (N => N)
+		ReadRs_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -77,8 +76,8 @@ begin
 
 	-- Imm32
 	g_Imm32: for i in 0 to N-1 generate
-	Imm32_i: dffg_N
-			generic map (N => N)
+	Imm32_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -89,8 +88,8 @@ begin
 
 	-- ReadRt
 	g_ReadRt: for i in 0 to N-1 generate
-		ReadRt_i: dffg_N
-			generic map (N => N)
+		ReadRt_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -101,8 +100,8 @@ begin
 
 	-- PCPlus4
 	g_PCPlus4: for i in 0 to N-1 generate
-	PCPlus4_i: dffg_N
-			generic map (N => N)
+	PCPlus4_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -113,8 +112,8 @@ begin
 
 	-- MemWrite
 	g_MemWrite: for i in 0 to 1-1 generate
-	MemWrite_i: dffg_N
-			generic map (N => 1)
+	MemWrite_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -125,8 +124,8 @@ begin
 
 	-- MemRead
 	g_MemRead: for i in 0 to 1-1 generate
-	MemRead_i: dffg_N
-			generic map (N => 1)
+	MemRead_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -137,8 +136,8 @@ begin
 
 	-- MemtoReg
 	g_MemtoReg: for i in 0 to MEMTOREG_WIDTH-1 generate
-	MemtoReg_i: dffg_N
-			generic map (N => MEMTOREG_WIDTH)
+	MemtoReg_i: dffg
+			--generic map (N => MEMTOREG_WIDTH)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -149,8 +148,8 @@ begin
 
 	-- RegWrite
 	g_RegWrite: for i in 0 to 1-1 generate
-	RegWrite_i: dffg_N
-			generic map (N => 1)
+	RegWrite_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -161,8 +160,8 @@ begin
 
 	-- Movn
 	g_Movn: for i in 0 to 1-1 generate
-	Movn_i: dffg_N
-			generic map (N => 1)
+	Movn_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -173,8 +172,8 @@ begin
 
 	-- Halt
 	g_Halt: for i in 0 to 1-1 generate
-	Halt_i: dffg_N
-			generic map (N => 1)
+	Halt_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -185,8 +184,8 @@ begin
 
 	-- Branch
 	g_Branch: for i in 0 to 1-1 generate
-	Branch_i: dffg_N
-			generic map (N => 1)
+	Branch_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -197,8 +196,8 @@ begin
 
 	-- BranchEq
 	g_BranchEq: for i in 0 to 1-1 generate
-	BranchEq_i: dffg_N
-			generic map (N => 1)
+	BranchEq_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -209,8 +208,8 @@ begin
 
 	-- JumpReg
 	g_JumpReg: for i in 0 to 1-1 generate
-	JumpReg_i: dffg_N
-			generic map (N => 1)
+	JumpReg_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -221,8 +220,8 @@ begin
 
 	-- Jump
 	g_Jump: for i in 0 to 1-1 generate
-	Jump_i: dffg_N
-			generic map (N => 1)
+	Jump_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -233,8 +232,8 @@ begin
 	
 	-- JumpImm
 	g_JumpImm: for i in 0 to JADDR_WIDTH-1 generate
-	JumpImm_i: dffg_N
-			generic map (N => JADDR_WIDTH)
+	JumpImm_i: dffg
+			--generic map (N => JADDR_WIDTH)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -245,8 +244,8 @@ begin
 
 	-- Zero
 	g_Zero: for i in 0 to 1-1 generate
-	Zero_i: dffg_N
-			generic map (N => 1)
+	Zero_i: dffg
+			--generic map (N => 1)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -258,8 +257,8 @@ begin
 
 	-- ALUResult
 	g_ALUResult: for i in 0 to N-1 generate
-	ALUResult_i: dffg_N
-			generic map (N => N)
+	ALUResult_i: dffg
+			--generic map (N => N)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
