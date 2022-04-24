@@ -12,6 +12,7 @@ entity EXMEM_reg is
 			i_RST		: in std_logic;	-- Reset input
 			i_WE		: in std_logic;	-- Write enable
 
+			i_Rd		: in std_logic_vector(DATA_SELECT - 1 downto 0);
 			i_ReadRs	: in std_logic_vector(N-1 downto 0); --------
 			i_ReadRt	: in std_logic_vector(N-1 downto 0);	-- Read Rt
 			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
@@ -30,6 +31,8 @@ entity EXMEM_reg is
 			i_Imm32		: in std_logic_vector(N-1 downto 0);	-- Immediate (32b)
 			i_ALUResult : in std_logic_vector(N-1 downto 0);
 
+
+			o_Rd		: out std_logic_vector(DATA_SELECT - 1 downto 0);
 			o_ReadRs	: out std_logic_vector(N-1 downto 0); --------
 			o_ReadRt	: out std_logic_vector(N-1 downto 0);
 			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
@@ -61,6 +64,18 @@ architecture behavior of EXMEM_reg is
 	end component;
 
 begin
+
+	-- Rd
+	g_Rd: for i in 0 to DATA_SELECT - 1 generate
+	Rd_i: dffg
+			--generic map (N => N)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_Rd(i),
+				o_Q		=> o_Rd(i));
+	end generate g_Rd;
 
 	-- ReadRs
 	g_ReadRs: for i in 0 to N-1 generate

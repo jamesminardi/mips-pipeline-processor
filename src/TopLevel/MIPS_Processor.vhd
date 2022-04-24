@@ -47,13 +47,13 @@ architecture structure of MIPS_Processor is
 
 	--------------------------  COMPONENTS  --------------------------
 	component PC_reg is
-		generic(N : integer);
-		port(
-			i_CLK	: in std_logic;     -- Clock input
-			i_RST	: in std_logic;     -- Reset input
-			i_WE	: in std_logic;		-- Write enable
-			i_D		: in std_logic_vector(N-1 downto 0);     -- Data value input
-			o_Q		: out std_logic_vector(N-1 downto 0));   -- Data value output
+		generic(N : integer := 32);
+			port(
+				i_CLK        : in std_logic;     -- Clock input
+				i_RST        : in std_logic;     -- Reset input
+				i_WE		 : in std_logic;	 -- Write enable
+				   i_D          : in std_logic_vector(N-1 downto 0);     -- Data value input
+				   o_Q          : out std_logic_vector(N-1 downto 0));   -- Data value output
 	end component;
 
 	component IFID_reg is
@@ -123,6 +123,7 @@ architecture structure of MIPS_Processor is
 			i_RST		: in std_logic;	-- Reset input
 			i_WE		: in std_logic;	-- Write enable
 
+			i_Rd		: in std_logic_vector(DATA_SELECT - 1 downto 0);
 			i_ReadRs	: in std_logic_vector(N-1 downto 0); --------
 			i_ReadRt	: in std_logic_vector(N-1 downto 0);	-- Read Rt
 			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
@@ -141,6 +142,7 @@ architecture structure of MIPS_Processor is
 			i_Zero		: in std_logic;
 			i_ALUResult : in std_logic_vector(N-1 downto 0);
 
+			o_Rd		: out std_logic_vector(DATA_SELECT - 1 downto 0);
 			o_ReadRs	: out std_logic_vector(N-1 downto 0); --------
 			o_ReadRt	: out std_logic_vector(N-1 downto 0);
 			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
@@ -294,36 +296,6 @@ signal s_Halt         : std_logic;  -- TODO: this signal indicates to the simula
 -- Required overflow signal -- for overflow exception detection
 signal s_Ovfl         : std_logic;  -- TODO: this signal indicates an overflow exception would have been initiated
 
-    
---------------------------  CONTROL OUTPUT SIGNALS  --------------------------
-signal s_RegDst 	: std_logic_vector(REGDST_WIDTH - 1 downto 0);
-signal s_ALUSrc 	: std_logic;
-signal s_MemtoReg 	: std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
--- signal s_RegWrite 	: std_logic; -- s_RegWr replaces this
-signal s_MemRead 	: std_logic;
-signal s_MemWrite 	: std_logic;
-signal s_SignExt	: std_logic;
-signal s_Jump 		: std_logic;
-signal s_JumpReg	: std_logic;
-signal s_Movn		: std_logic;
-signal s_Branch 	: std_logic;
-signal s_BEQ		: std_logic;
-signal s_ALUOp 		: std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
-signal s_ALUAction : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
-
---------------------------  GENERAL SIGNALS  --------------------------
-signal s_UpdatePC : std_logic_vector(DATA_WIDTH - 1 downto 0);			-- Input into PC register
---signal s_WriteRegister : std_logic_vector(DATA_SELECT - 1 downto 0); 	-- Input into regfile i_Rd
-signal s_RegWrite : std_logic; -- Input into movn regwrite mux
-signal s_ReadRs   : std_logic_vector(DATA_WIDTH - 1 downto 0); -- Output of regfile read Rs
-signal s_ReadRt   : std_logic_vector(DATA_WIDTH - 1 downto 0); -- Output of regfile read Rt
-signal s_ALUInB   : std_logic_vector(DATA_WIDTH - 1 downto 0); -- 2nd input of ALU (Imm)
-signal s_ALUResult: std_logic_vector(DATA_WIDTH - 1 downto 0); -- Result from main alu
-signal s_Cout     : std_logic; -- Carry out from ALU
-signal s_Zero     : std_logic; -- Zero signal from ALU
-signal s_PCPlus4  : std_logic_vector(DATA_WIDTH - 1 downto 0);
-signal s_ALUPreMovn:std_logic_vector(DATA_WIDTH - 1 downto 0);
-signal s_MovnZero : std_logic;
 
 --------------------------  IF SIGNALS  --------------------------
 -- These signals go INTO IF/ID
@@ -369,6 +341,7 @@ signal id_BranchEq	: std_logic;
 signal id_JumpReg	: std_logic;
 signal id_Jump		: std_logic;
 signal id_JumpImm	: std_logic_vector(JADDR_WIDTH-1 downto 0);
+signal id_RdFinal	: std_logic_vector(DATA_SELECT-1 downto 0);
 
 --------------------------  EX SIGNALS  --------------------------
 -- From ID/EX and consumed
@@ -456,7 +429,7 @@ begin
   	with iInstLd select
   	s_IMemAddr <=
 	  	s_NextInstAddr when '0',
-    	iInstAddr when others;
+    	iInstAddr when others; 
 
 
 	-- Selects control flow or pc+4
@@ -466,8 +439,8 @@ begin
 		if_PCPlus4 when others;
 
 	PC: PC_reg
-	generic map(
-		N => DATA_WIDTH)
+	-- generic map(
+	-- 	N => DATA_WIDTH)
 	port map (
 		i_CLK => iCLK,
 		i_RST => iRST,
@@ -547,16 +520,24 @@ begin
 	-- 		id_Rd   when "01",
 	-- 		"11111" when "10",
 	-- 		id_Rs   when others;
-	with id_RegDst select
-	s_RegWrAddr <=
-		id_Rt   when "00",
-		id_Rd   when "01",
-		"11111" when "10",
-		id_Rt   when others;
-			
 
+	-- with id_RegDst select
+	-- s_RegWrAddr <=
+	-- 	id_Rt   when "00",
+	-- 	id_Rd   when "01",
+	-- 	"11111" when "10",
+	-- 	id_Rt   when others;
+	with id_RegDst select
+		id_RdFinal <=
+			id_Rt   when "00",
+			id_Rd   when "01",
+			"11111" when "10",
+			id_Rt   when others;
+			
+	-- For Writeback
 	s_RegWrAddr <= wb_Rd;
 	s_RegWrData <= wb_WriteData;
+	s_RegWr <= wb_RegWrite;
 
 	Regfile_Unit: regfile
 	generic map(
@@ -565,7 +546,7 @@ begin
 	port map(
 		i_CLK	=> iCLK, 
 		i_RST	=> iRST, 
-		i_We 	=> wb_RegWrite, 
+		i_We 	=> s_RegWr, 
 		i_Rs 	=> id_Rs,  -- Register to read 1
 		i_Rt 	=> id_Rt,  -- Register to read 2
 		i_Rd 	=> s_RegWrAddr, -- Reg being written to
@@ -587,7 +568,7 @@ begin
         i_RST => iRST,
         i_WE => '1',
   
-        i_Rd      	=> id_Rd,
+        i_Rd      	=> id_RdFinal,
         i_ReadRs  	=> id_ReadRs,
         i_ReadRt  	=> id_ReadRt,
         i_Imm32   	=> id_Imm32,
@@ -649,7 +630,7 @@ begin
 		oZero		=> ex_Zero);
 
 
-	--oALUOut <= s_ALUResult; TODO?
+	oALUOut <= ex_ALUResult;
 
 	--------------------------  MEMORY (MEM) STAGE  --------------------------	
 	
@@ -660,6 +641,7 @@ begin
 		i_RST => iRST,
 		i_WE => '1',
 
+		i_Rd		=> ex_Rd,
 		i_ReadRs	=> ex_ReadRs,
 		i_ReadRt	=> ex_ReadRt,
 		i_PCPlus4	=> ex_PCPlus4,
@@ -678,6 +660,7 @@ begin
 		i_Imm32		=> ex_Imm32,
 		i_ALUResult => ex_ALUResult,
 
+		o_Rd		=> mem_Rd,
 		o_ReadRs	=> mem_ReadRs,
 		o_Branch	=> mem_Branch,
 		o_BranchEQ	=> mem_BranchEQ,
