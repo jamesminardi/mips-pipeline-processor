@@ -47,6 +47,7 @@ signal s_oALUOp : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
 signal s_Action : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
 signal s_PCSrc : std_logic;
 signal s_OpcodeFunct : std_logic_vector(11 downto 0);
+signal s_RegWritePreJumpReg : std_logic;
 
     -- Doesn't include JAL & others
 begin
@@ -82,8 +83,8 @@ begin
             '0' when others;
 
     with iOpcode select
-        oRegWrite <=
-        (NOT s_JumpReg)  when "000000", -- R-type (Dont for JR)
+	s_RegWritePreJumpReg <=
+        	'1' when "000000", -- R-type (Dont for JR)
             '1' when "001000", -- addi
             '1' when "001001", -- addiu
             '1' when "001100", -- andi
@@ -94,6 +95,12 @@ begin
             '1' when "001010", -- slti
             '1' when "000011", -- jal
             '0' when others;
+
+	with s_OpcodeFunct select
+		oRegWrite <=
+			'0' when "000000001000",
+			'0' when "000000000000",
+			s_RegWritePreJumpReg when others;
 
     with iOpcode select
         oMemRead <=
