@@ -16,7 +16,8 @@ entity fetch is
 		i_BEQ   	: in std_logic; --1 = Beq, 0 = Bne
 		i_BranchImm	: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 		i_JumpImm  	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
-		o_Addr   	: out std_logic_vector(DATA_WIDTH - 1 downto 0)); --output address
+		o_Addr   	: out std_logic_vector(DATA_WIDTH - 1 downto 0); --output address
+		o_PCSrc		: out std_logic);
 end fetch;
 
 architecture behavior of fetch is
@@ -66,10 +67,17 @@ signal s_JRMuxtoJMux			: std_logic_vector(DATA_WIDTH - 1 downto 0); -- Either Br
 -- signal s_Br_Control		: std_logic_vector(DATA_WIDTH - 1 downto 0); -- or result of Br0AND and BrN0AND
 signal s_ShifterA : std_logic_vector(DATA_WIDTH -1 downto 0);
 signal s_JRMuxSelect : std_logic;
+signal s_Addr		: std_logic_vector(DATA_WIDTH - 1 downto 0);
 
 begin 
 	--generic(int : integer := 4);
 	--G_NBit_MUX: for i in 0 to 31 generate -- there are 32 registers that will be tried in the mux
+	
+	-- with s_Addr select
+	-- 	o_PCSrc <=
+	-- 		'0' when i_PCPlus4,
+	-- 		'1' when others;
+	o_PCSrc <= (i_Branch OR i_Jump OR i_JumpReg);
 	
 	s_PCPlus4 <= i_PCPlus4;
 
@@ -129,6 +137,8 @@ begin
 		i_S          => i_Jump, --jump select = alu control jump
    	    i_D0         => s_JRMuxtoJMux, --0 = result of the branch mux
         i_D1         => s_JumpTarget, --1 = jump addr (31-0)
-	    o_O          => o_Addr); --output goes to PC (next inst addr in processor)
+	    o_O          => s_Addr); --output goes to PC (next inst addr in processor)
+
+	o_Addr <= s_Addr;
 
 end behavior;
