@@ -264,16 +264,17 @@ architecture structure of MIPS_Processor is
 
 	component fetch is
 		port(
-			i_PCPlus4		: in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
-			i_Jump		: in std_logic; --input 0 or 1 for jump or not jump
-			i_JumpReg	: in std_logic; -- jump register instr or not
-			i_JumpRegData: in std_logic_vector(DATA_WIDTH - 1 downto 0);
-			i_Branch	: in std_logic; --input 0 or 1 for branch or not branch
-			i_Zero      : in std_logic;
-			i_BEQ   : in std_logic; --input 0 or 1 for branchEQ or BNE
+			i_PCPlus4   : in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
+			i_Jump   	: in std_logic; --input 0 or 1 for jump or not jump
+			i_JumpReg 	: in std_logic; -- jump reg instr or not
+			i_JumpRegData:in std_logic_vector(DATA_WIDTH - 1 downto 0);
+			i_Branch   	: in std_logic; --input 0 or 1 for branch or not branch
+			i_Zero   	: in std_logic;
+			i_BEQ   	: in std_logic; --1 = Beq, 0 = Bne
 			i_BranchImm	: in std_logic_vector(DATA_WIDTH - 1 downto 0);
-			i_JumpImm	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
-			o_Addr		: out std_logic_vector(DATA_WIDTH - 1 downto 0));
+			i_JumpImm  	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
+			o_Addr   	: out std_logic_vector(DATA_WIDTH - 1 downto 0); --output address
+			o_PCSrc		: out std_logic);
 	end component;
 
 
@@ -403,6 +404,7 @@ signal mem_JumpReg : std_logic;
 signal mem_Jump : std_logic;
 signal mem_JumpImm : std_logic_vector(JADDR_WIDTH-1 downto 0);
 signal mem_Zero : std_logic;
+signal fetch_PCSrc : std_logic;
 
 --------------------------  WB SIGNALS  --------------------------
 -- From MEM/WB reg and consumed
@@ -433,7 +435,7 @@ begin
 
 
 	-- Selects control flow or pc+4
-	with id_PCSrc select
+	with fetch_PCSrc select
 	if_NewPC <=
 		mem_NewPC when '1',
 		if_PCPlus4 when others;
@@ -718,7 +720,8 @@ begin
 		i_BEQ       	=> mem_BranchEq,
 		i_BranchImm		=> mem_Imm32,
 		i_JumpImm	  	=> mem_JumpImm,
-		o_Addr		  	=> mem_NewPC);
+		o_Addr		  	=> mem_NewPC,
+		o_PCSrc			=> fetch_PCSrc);
 
 
   --------------------------  WRITE BACK (WB) STAGE  --------------------------	
