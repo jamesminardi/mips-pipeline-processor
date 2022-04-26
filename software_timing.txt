@@ -3,12 +3,12 @@
 # CprE 381 toolflow Timing dump
 #
 
-FMax: 55.21mhz Clk Constraint: 20.00ns Slack: 1.89ns
+FMax: 55.82mhz Clk Constraint: 20.00ns Slack: 2.09ns
 
 The path is given below
 
  ===================================================================
- From Node    : IDEX_reg:IDEX|dffg:\g_ReadRt:0:ReadRt_i|s_Q
+ From Node    : IDEX_reg:IDEX|dffg:\g_ALUSrc:0:ALUSrc_i|s_Q
  To Node      : EXMEM_reg:EXMEM|dffg:\g_Zero:0:Zero_i|s_Q
  Launch Clock : iCLK
  Latch Clock  : iCLK
@@ -16,92 +16,90 @@ The path is given below
  Total (ns)  Incr (ns)     Type  Element
  ==========  ========= ==  ====  ===================================
       0.000      0.000           launch edge time
-      3.101      3.101  R        clock network delay
-      3.333      0.232     uTco  IDEX_reg:IDEX|dffg:\g_ReadRt:0:ReadRt_i|s_Q
-      3.333      0.000 FF  CELL  IDEX|\g_ReadRt:0:ReadRt_i|s_Q|q
-      4.871      1.538 FF    IC  ALUSrc_mux|\G_NBit_MUX:0:MUXI|o_O~0|datad
-      4.996      0.125 FF  CELL  ALUSrc_mux|\G_NBit_MUX:0:MUXI|o_O~0|combout
-      5.246      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|full_adder_0|oCout~0|datad
-      5.371      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|full_adder_0|oCout~0|combout
-      5.621      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:1:full_adder_I|oCout~0|datad
-      5.746      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:1:full_adder_I|oCout~0|combout
-      5.997      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:2:full_adder_I|oCout~0|datad
-      6.122      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:2:full_adder_I|oCout~0|combout
-      6.371      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:3:full_adder_I|oCout~0|datad
-      6.496      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:3:full_adder_I|oCout~0|combout
-      6.787      0.291 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:4:full_adder_I|oCout~0|datab
-      7.212      0.425 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:4:full_adder_I|oCout~0|combout
-      7.461      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:5:full_adder_I|oCout~0|datad
-      7.586      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:5:full_adder_I|oCout~0|combout
-      7.843      0.257 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:6:full_adder_I|oCout~0|datac
-      8.124      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:6:full_adder_I|oCout~0|combout
-      8.382      0.258 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:7:full_adder_I|oCout~0|datac
-      8.663      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:7:full_adder_I|oCout~0|combout
-      8.916      0.253 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:8:full_adder_I|oCout~0|datad
-      9.041      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:8:full_adder_I|oCout~0|combout
-      9.295      0.254 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:9:full_adder_I|oCout~0|datac
-      9.576      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:9:full_adder_I|oCout~0|combout
-      9.826      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:10:full_adder_I|oCout~0|datad
-      9.951      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:10:full_adder_I|oCout~0|combout
-     10.208      0.257 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:11:full_adder_I|oCout~0|datac
-     10.489      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:11:full_adder_I|oCout~0|combout
-     10.741      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:12:full_adder_I|oCout~0|datad
-     10.866      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:12:full_adder_I|oCout~0|combout
-     11.115      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:13:full_adder_I|oCout~0|datad
-     11.240      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:13:full_adder_I|oCout~0|combout
-     11.492      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:14:full_adder_I|oCout~0|datad
-     11.617      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:14:full_adder_I|oCout~0|combout
-     11.998      0.381 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:15:full_adder_I|oCout~0|datad
-     12.123      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:15:full_adder_I|oCout~0|combout
-     12.374      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:16:full_adder_I|oCout~0|datad
-     12.499      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:16:full_adder_I|oCout~0|combout
-     12.750      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:17:full_adder_I|oCout~0|datad
-     12.875      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:17:full_adder_I|oCout~0|combout
-     13.129      0.254 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:18:full_adder_I|oCout~0|datac
-     13.410      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:18:full_adder_I|oCout~0|combout
-     13.660      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:19:full_adder_I|oCout~0|datad
-     13.785      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:19:full_adder_I|oCout~0|combout
-     14.035      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:20:full_adder_I|oCout~0|datad
-     14.160      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:20:full_adder_I|oCout~0|combout
-     14.414      0.254 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:21:full_adder_I|oCout~0|datac
-     14.695      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:21:full_adder_I|oCout~0|combout
-     14.944      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:22:full_adder_I|oCout~0|datad
-     15.069      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:22:full_adder_I|oCout~0|combout
-     15.324      0.255 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:23:full_adder_I|oCout~0|datac
-     15.605      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:23:full_adder_I|oCout~0|combout
-     15.857      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:24:full_adder_I|oCout~0|datad
-     15.982      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:24:full_adder_I|oCout~0|combout
-     16.231      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:25:full_adder_I|oCout~0|datad
-     16.356      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:25:full_adder_I|oCout~0|combout
-     16.606      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:26:full_adder_I|oCout~0|datad
-     16.731      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:26:full_adder_I|oCout~0|combout
-     16.987      0.256 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:27:full_adder_I|oCout~0|datac
-     17.268      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:27:full_adder_I|oCout~0|combout
-     17.523      0.255 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:28:full_adder_I|oCout~0|datac
-     17.804      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:28:full_adder_I|oCout~0|combout
-     18.055      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:29:full_adder_I|oCout~0|datad
-     18.180      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:29:full_adder_I|oCout~0|combout
-     18.430      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:30:full_adder_I|oCout~0|datad
-     18.555      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:30:full_adder_I|oCout~0|combout
-     19.290      0.735 FF    IC  ALU_Main|Mux5~5|datad
-     19.440      0.150 FR  CELL  ALU_Main|Mux5~5|combout
-     19.651      0.211 RR    IC  ALU_Main|Mux37~12|datad
-     19.806      0.155 RR  CELL  ALU_Main|Mux37~12|combout
-     20.040      0.234 RR    IC  ALU_Main|Mux37~13|datab
-     20.483      0.443 RF  CELL  ALU_Main|Mux37~13|combout
-     20.716      0.233 FF    IC  ALU_Main|Mux37~26|datac
-     20.997      0.281 FF  CELL  ALU_Main|Mux37~26|combout
-     20.997      0.000 FF    IC  EXMEM|\g_Zero:0:Zero_i|s_Q|d
-     21.101      0.104 FF  CELL  EXMEM_reg:EXMEM|dffg:\g_Zero:0:Zero_i|s_Q
+      3.046      3.046  R        clock network delay
+      3.278      0.232     uTco  IDEX_reg:IDEX|dffg:\g_ALUSrc:0:ALUSrc_i|s_Q
+      3.278      0.000 FF  CELL  IDEX|\g_ALUSrc:0:ALUSrc_i|s_Q|q
+      4.082      0.804 FF    IC  ALUSrc_mux|\G_NBit_MUX:0:MUXI|o_O~0|dataa
+      4.459      0.377 FR  CELL  ALUSrc_mux|\G_NBit_MUX:0:MUXI|o_O~0|combout
+      4.714      0.255 RR    IC  ALU_Main|add_sub_C|adder_g|full_adder_0|oCout~0|datab
+      5.148      0.434 RF  CELL  ALU_Main|add_sub_C|adder_g|full_adder_0|oCout~0|combout
+      5.399      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:1:full_adder_I|oCout~0|datad
+      5.524      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:1:full_adder_I|oCout~0|combout
+      5.815      0.291 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:2:full_adder_I|oCout~0|datab
+      6.240      0.425 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:2:full_adder_I|oCout~0|combout
+      6.496      0.256 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:3:full_adder_I|oCout~0|datac
+      6.777      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:3:full_adder_I|oCout~0|combout
+      7.035      0.258 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:4:full_adder_I|oCout~0|datac
+      7.316      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:4:full_adder_I|oCout~0|combout
+      7.572      0.256 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:5:full_adder_I|oCout~0|datac
+      7.853      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:5:full_adder_I|oCout~0|combout
+      8.103      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:6:full_adder_I|oCout~0|datad
+      8.228      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:6:full_adder_I|oCout~0|combout
+      8.479      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:7:full_adder_I|oCout~0|datad
+      8.604      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:7:full_adder_I|oCout~0|combout
+      8.853      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:8:full_adder_I|oCout~0|datad
+      8.978      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:8:full_adder_I|oCout~0|combout
+      9.229      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:9:full_adder_I|oCout~0|datad
+      9.354      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:9:full_adder_I|oCout~0|combout
+      9.613      0.259 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:10:full_adder_I|oCout~0|datac
+      9.894      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:10:full_adder_I|oCout~0|combout
+     10.149      0.255 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:11:full_adder_I|oCout~0|datac
+     10.430      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:11:full_adder_I|oCout~0|combout
+     10.680      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:12:full_adder_I|oCout~0|datad
+     10.805      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:12:full_adder_I|oCout~0|combout
+     11.057      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:13:full_adder_I|oCout~0|datad
+     11.182      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:13:full_adder_I|oCout~0|combout
+     11.431      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:14:full_adder_I|oCout~0|datad
+     11.556      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:14:full_adder_I|oCout~0|combout
+     11.982      0.426 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:15:full_adder_I|oCout~0|datad
+     12.107      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:15:full_adder_I|oCout~0|combout
+     12.356      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:16:full_adder_I|oCout~0|datad
+     12.481      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:16:full_adder_I|oCout~0|combout
+     12.731      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:17:full_adder_I|oCout~0|datad
+     12.856      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:17:full_adder_I|oCout~0|combout
+     13.108      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:18:full_adder_I|oCout~0|datad
+     13.233      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:18:full_adder_I|oCout~0|combout
+     13.491      0.258 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:19:full_adder_I|oCout~0|datac
+     13.772      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:19:full_adder_I|oCout~0|combout
+     14.027      0.255 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:20:full_adder_I|oCout~0|datac
+     14.308      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:20:full_adder_I|oCout~0|combout
+     14.559      0.251 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:21:full_adder_I|oCout~0|datad
+     14.684      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:21:full_adder_I|oCout~0|combout
+     14.934      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:22:full_adder_I|oCout~0|datad
+     15.059      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:22:full_adder_I|oCout~0|combout
+     15.314      0.255 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:23:full_adder_I|oCout~0|datac
+     15.595      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:23:full_adder_I|oCout~0|combout
+     15.845      0.250 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:24:full_adder_I|oCout~0|datad
+     15.970      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:24:full_adder_I|oCout~0|combout
+     16.222      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:25:full_adder_I|oCout~0|datad
+     16.347      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:25:full_adder_I|oCout~0|combout
+     16.599      0.252 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:26:full_adder_I|oCout~0|datad
+     16.724      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:26:full_adder_I|oCout~0|combout
+     16.973      0.249 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:27:full_adder_I|oCout~0|datad
+     17.098      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:27:full_adder_I|oCout~0|combout
+     17.351      0.253 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:28:full_adder_I|oCout~0|datad
+     17.476      0.125 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:28:full_adder_I|oCout~0|combout
+     17.734      0.258 FF    IC  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:29:full_adder_I|oCout~0|datac
+     18.015      0.281 FF  CELL  ALU_Main|add_sub_C|adder_g|\nbit_full_adder:29:full_adder_I|oCout~0|combout
+     18.745      0.730 FF    IC  ALU_Main|Mux6~3|datad
+     18.895      0.150 FR  CELL  ALU_Main|Mux6~3|combout
+     19.100      0.205 RR    IC  ALU_Main|Mux6~4|datad
+     19.255      0.155 RR  CELL  ALU_Main|Mux6~4|combout
+     19.991      0.736 RR    IC  ALU_Main|Mux37~13|datac
+     20.261      0.270 RF  CELL  ALU_Main|Mux37~13|combout
+     20.497      0.236 FF    IC  ALU_Main|Mux37~26|datac
+     20.778      0.281 FF  CELL  ALU_Main|Mux37~26|combout
+     20.778      0.000 FF    IC  EXMEM|\g_Zero:0:Zero_i|s_Q|d
+     20.882      0.104 FF  CELL  EXMEM_reg:EXMEM|dffg:\g_Zero:0:Zero_i|s_Q
  Data Required Path:
  Total (ns)  Incr (ns)     Type  Element
  ==========  ========= ==  ====  ===================================
      20.000     20.000           latch edge time
-     22.982      2.982  R        clock network delay
-     22.990      0.008           clock pessimism removed
-     22.970     -0.020           clock uncertainty
-     22.988      0.018     uTsu  EXMEM_reg:EXMEM|dffg:\g_Zero:0:Zero_i|s_Q
- Data Arrival Time  :    21.101
- Data Required Time :    22.988
- Slack              :     1.887
+     22.938      2.938  R        clock network delay
+     22.970      0.032           clock pessimism removed
+     22.950     -0.020           clock uncertainty
+     22.968      0.018     uTsu  EXMEM_reg:EXMEM|dffg:\g_Zero:0:Zero_i|s_Q
+ Data Arrival Time  :    20.882
+ Data Required Time :    22.968
+ Slack              :     2.086
  ===================================================================
