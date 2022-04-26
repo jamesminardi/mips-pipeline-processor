@@ -211,6 +211,7 @@ architecture structure of MIPS_Processor is
 
 	component control is
 		port (
+			iInst		: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 			iOpcode     : in std_logic_vector(OPCODE_WIDTH -1 downto 0); -- 6 MSB of 32bit instruction
 			iFunct      : in std_logic_vector(OPCODE_WIDTH - 1 downto 0); -- only for JR
 			-- iALUZero : in std_logic; -- TODO: Zero flag from ALU for PC src?
@@ -497,6 +498,7 @@ begin
 
   Control_Unit: control
 	port map (
+		iInst		=> id_Inst,
 		iOpcode     => id_Opcode,
 		iFunct		  => id_Funct,
 		-- iALUZero =>

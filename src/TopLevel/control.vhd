@@ -19,6 +19,7 @@ use work.MIPS_types.all;
 
 entity control is
     port (
+		iInst		: in std_logic_vector(DATA_WIDTH - 1 downto 0);
         iOpcode     : in std_logic_vector(OPCODE_WIDTH -1 downto 0); -- 6 MSB of 32bit instruction
         iFunct      : in std_logic_vector(OPCODE_WIDTH - 1 downto 0); -- only for JR
         -- iALUZero : out std_logic; -- TODO: Zero flag from ALU for PC src?
@@ -47,7 +48,8 @@ signal s_oALUOp : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
 signal s_Action : std_logic_vector(ALU_OP_WIDTH - 1 downto 0);
 signal s_PCSrc : std_logic;
 signal s_OpcodeFunct : std_logic_vector(11 downto 0);
-signal s_RegWritePreJumpReg : std_logic;
+signal s_RegWritePreJrNop : std_logic;
+signal s_RegWritePreNop		: std_logic;
 
     -- Doesn't include JAL & others
 begin
@@ -83,7 +85,7 @@ begin
             '0' when others;
 
     with iOpcode select
-	s_RegWritePreJumpReg <=
+	s_RegWritePreJrNop <=
         	'1' when "000000", -- R-type (Dont for JR)
             '1' when "001000", -- addi
             '1' when "001001", -- addiu
@@ -97,10 +99,14 @@ begin
             '0' when others;
 
 	with s_OpcodeFunct select
-		oRegWrite <=
+		s_RegWritePreNop <=
 			'0' when "000000001000",
-			'0' when "000000000000",
-			s_RegWritePreJumpReg when others;
+			s_RegWritePreJrNop when others;
+
+	with iInst select
+		oRegWrite <=
+			'0' when x"00000000",
+			s_RegWritePreNop when others;
 
     with iOpcode select
         oMemRead <=
