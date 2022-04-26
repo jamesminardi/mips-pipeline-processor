@@ -166,12 +166,9 @@ welcome:
 
         move    $2,$0
         move    $sp,$fp
-			#nop
-			#nop
-			#nop
-        lw      $31,36($sp)
+        lw      $31,36($sp) # Changes $ra, need 1 nop
         lw      $fp,32($sp)
-			nop # Why are these needed?
+			nop
         addiu   $sp,$sp,40
         jr       $ra
 			nop
@@ -303,9 +300,6 @@ turkey:
 			nop
         sw      $3,0($2)
         move    $sp,$fp
-			nop
-			nop
-			nop
         lw      $31,44($sp)
         lw      $fp,40($sp)
 			nop
@@ -525,9 +519,6 @@ waggish:
 
 cynical:
         move    $sp,$fp
-			nop
-			nop
-			nop
         lw      $31,28($sp)
         lw      $fp,24($sp)
 		nop
