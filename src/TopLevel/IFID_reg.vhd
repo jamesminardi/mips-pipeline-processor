@@ -10,7 +10,8 @@ entity IFID_reg is
 		port(
 			i_CLK       : in std_logic;	-- Clock input
 			i_RST       : in std_logic;	-- Reset input
-			i_WE		: in std_logic;	-- Write enable
+			i_WE		: in std_logic;	-- Write enable / Stall
+			i_Flush		: in std_logic; -- Changes to NOP in pipeline
 			i_Inst		: in std_logic_vector(N-1 downto 0);	-- Full instruction
 			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
 			o_Inst		: out std_logic_vector(N-1 downto 0);
@@ -28,7 +29,15 @@ architecture behavior of IFID_reg is
        		o_Q          : out std_logic);   -- Data value output
 	end component;
 
+signal s_Inst : std_logic_vector(N - 1 downto 0);
+
 begin
+
+	with i_Flush select
+		s_Inst <=
+			x"00000000" when '1',
+			i_Inst when others;
+
 	-- Instruction [31:0]
 	g_Inst: for i in 0 to N-1 generate
 		Inst_i: dffg 
@@ -36,7 +45,7 @@ begin
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
 				i_WE	=> i_WE,
-				i_D		=> i_Inst(i),
+				i_D		=> s_Inst(i),
 				o_Q		=> o_Inst(i));
 	end generate g_Inst;
 

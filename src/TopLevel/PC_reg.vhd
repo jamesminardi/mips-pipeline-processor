@@ -27,6 +27,9 @@ signal s_ADDR_RST : std_logic_vector(N - 1 downto 0) := x"00400000";
 
 
 begin
+
+s_ADDR_RST <= x"00400000";
+
 g_PC_dffg_N: for i in 0 to N-1 generate
 	PC_dffg_I: PC_dffg port map (
 					i_CLK	=> i_CLK,

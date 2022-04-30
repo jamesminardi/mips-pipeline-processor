@@ -12,11 +12,9 @@ entity IDEX_reg is
 			i_RST		: in std_logic;	-- Reset input
 			i_WE		: in std_logic;	-- Write enable
 
-			i_Rd		: in std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
 			i_ReadRs	: in std_logic_vector(N-1 downto 0);	-- Read Rs
 			i_ReadRt	: in std_logic_vector(N-1 downto 0);	-- Read Rt
 			i_Imm32		: in std_logic_vector(N-1 downto 0);	-- Immediate (32b)
-			i_PCPlus4	: in std_logic_vector(N-1 downto 0);	-- PC + 4
 			i_ALUSrc	: in std_logic; -- Choose ALU B to be immediate or Read Rt
 			i_ALUOp		: in std_logic_vector(ALU_OP_WIDTH-1 downto 0);	-- Choose ALU instruction
 			i_Shamt		: in std_logic_vector(DATA_SELECT-1 downto 0);
@@ -26,17 +24,20 @@ entity IDEX_reg is
 			i_RegWrite	: in std_logic;
 			i_Movn		: in std_logic;
 			i_Halt 		: in std_logic;
-			i_Branch	: in std_logic;
-			i_BranchEq	: in std_logic;
-			i_JumpReg	: in std_logic;
-			i_Jump		: in std_logic;
-			i_JumpImm	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
+			i_PCPlus4 : in std_logic_vector(N-1 downto 0);
+			
+			i_Rd		: in std_logic_vector(DATA_SELECT-1 downto 0);
+			i_Rs		: in std_logic_vector(DATA_SELECT-1 downto 0);
+			i_Rt		: in std_logic_vector(DATA_SELECT-1 downto 0);
+			
+			o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);
+			o_Rs		: out std_logic_vector(DATA_SELECT-1 downto 0);
+			o_Rt		: out std_logic_vector(DATA_SELECT-1 downto 0);
 
-			o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
 			o_ReadRs	: out std_logic_vector(N-1 downto 0);	-- Read Rs
 			o_ReadRt	: out std_logic_vector(N-1 downto 0);	-- Read Rt
+			o_PCPlus4 : out std_logic_vector(N-1 downto 0);
 			o_Imm32		: out std_logic_vector(N-1 downto 0);	-- Immediate (32b)
-			o_PCPlus4	: out std_logic_vector(N-1 downto 0);	-- PC + 4
 			o_ALUSrc	: out std_logic; -- Choose ALU B to be immediate or Read Rt
 			o_ALUOp		: out std_logic_vector(ALU_OP_WIDTH-1 downto 0);	-- Choose ALU instruction
 			o_Shamt		: out std_logic_vector(DATA_SELECT-1 downto 0);
@@ -45,12 +46,7 @@ entity IDEX_reg is
 			o_MemtoReg	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
 			o_RegWrite	: out std_logic;
 			o_Movn		: out std_logic;
-			o_Halt 		: out std_logic;
-			o_Branch	: out std_logic;
-			o_BranchEq	: out std_logic;
-			o_JumpReg	: out std_logic;
-			o_Jump		: out std_logic;
-			o_JumpImm	: out std_logic_vector(JADDR_WIDTH - 1 downto 0));
+			o_Halt 		: out std_logic);
 end IDEX_reg;
 
 architecture behavior of IDEX_reg is
@@ -66,10 +62,23 @@ architecture behavior of IDEX_reg is
 
 begin
 
+
+
+		-- PCPlus4
+		g_PCPlus4: for i in 0 to N-1 generate
+		PCPlus4_i: dffg
+				--generic map (N => N)
+				port map (
+					i_CLK	=> i_CLK,
+					i_RST	=> i_RST,
+					i_WE	=> i_WE,
+					i_D		=> i_PCPlus4(i),
+					o_Q		=> o_PCPlus4(i));
+		end generate g_PCPlus4;
+
 	-- Rd
 	g_Rd: for i in 0 to DATA_SELECT-1 generate
 		Rd_i: dffg
-			--generic map (N => DATA_SELECT)
 			port map (
 				i_CLK	=> i_CLK,
 				i_RST	=> i_RST,
@@ -77,6 +86,30 @@ begin
 				i_D		=> i_Rd(i),
 				o_Q		=> o_Rd(i));
 	end generate g_Rd;
+
+	-- Rt
+	g_Rt: for i in 0 to DATA_SELECT-1 generate
+		Rt_i: dffg
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_Rt(i),
+				o_Q		=> o_Rt(i));
+	end generate g_Rt;
+
+	-- Rs
+	g_Rs: for i in 0 to DATA_SELECT-1 generate
+		Rs_i: dffg
+			--generic map (N => DATA_SELECT)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_Rs(i),
+				o_Q		=> o_Rs(i));
+	end generate g_Rs;
+
 
 	-- ReadRs
 	g_ReadRs: for i in 0 to N-1 generate
@@ -113,18 +146,6 @@ begin
 				i_D		=> i_Imm32(i),
 				o_Q		=> o_Imm32(i));
 	end generate g_Imm32;
-
-	-- PCPlus4
-	g_PCPlus4: for i in 0 to N-1 generate
-	PCPlus4_i: dffg
-			--generic map (N => N)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_PCPlus4(i),
-				o_Q		=> o_PCPlus4(i));
-	end generate g_PCPlus4;
 
 	-- ALUSrc
 	g_ALUSrc: for i in 0 to 1-1 generate
@@ -233,65 +254,5 @@ begin
 				i_D		=> i_Halt,
 				o_Q		=> o_Halt);
 	end generate g_Halt;
-
-	-- Branch
-	g_Branch: for i in 0 to 1-1 generate
-	Branch_i: dffg
-			--generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_Branch,
-				o_Q		=> o_Branch);
-	end generate g_Branch;
-
-	-- BranchEq
-	g_BranchEq: for i in 0 to 1-1 generate
-	BranchEq_i: dffg
-			--generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_BranchEq,
-				o_Q		=> o_BranchEq);
-	end generate g_BranchEq;
-
-	-- JumpReg
-	g_JumpReg: for i in 0 to 1-1 generate
-	JumpReg_i: dffg
-			--generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_JumpReg,
-				o_Q		=> o_JumpReg);
-	end generate g_JumpReg;
-
-	-- Jump
-	g_Jump: for i in 0 to 1-1 generate
-	Jump_i: dffg
-			--generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_Jump,
-				o_Q		=> o_Jump);
-	end generate g_Jump;
-
-	-- JumpImm
-	g_JumpImm: for i in 0 to JADDR_WIDTH-1 generate
-	JumpImm_i: dffg
-			--generic map (N => 1)
-			port map (
-				i_CLK	=> i_CLK,
-				i_RST	=> i_RST,
-				i_WE	=> i_WE,
-				i_D		=> i_JumpImm(i),
-				o_Q		=> o_JumpImm(i));
-	end generate g_JumpImm;
 
 end behavior;

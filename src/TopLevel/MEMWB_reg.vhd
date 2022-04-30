@@ -19,6 +19,8 @@ entity MEMWB_reg is
 			i_RegWrite	: in std_logic;
 			i_Halt 		: in std_logic;
 			i_ALUResult : in std_logic_vector(N-1 downto 0);
+			i_Ovfl		: in std_logic;
+			o_Ovfl		: out std_logic;
 
 			o_Rd		: out std_logic_vector(DATA_SELECT - 1 downto 0);
 			o_PCPlus4	: out std_logic_vector(N-1 downto 0);
@@ -42,6 +44,18 @@ architecture behavior of MEMWB_reg is
 	end component;
 
 begin
+
+	-- Ovfl
+	g_Ovfl: for i in 0 to 1-1 generate
+	Ovfl_i: dffg
+			--generic map (N => 1)
+			port map (
+				i_CLK	=> i_CLK,
+				i_RST	=> i_RST,
+				i_WE	=> i_WE,
+				i_D		=> i_Ovfl,
+				o_Q		=> o_Ovfl);
+	end generate g_Ovfl;
 
 
 	-- Rd

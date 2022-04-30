@@ -8,15 +8,15 @@ use work.MIPS_types.all;
 entity fetch is
     port(
 		i_PCPlus4   : in std_logic_vector(DATA_WIDTH - 1 downto 0); --input address
+		i_Branch   	: in std_logic; --input 0 or 1 for branch or not branch
+		i_BEQ   	: in std_logic; --1 = Beq, 0 = Bne
+		i_BranchImm	: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 		i_Jump   	: in std_logic; --input 0 or 1 for jump or not jump
 		i_JumpReg 	: in std_logic; -- jump reg instr or not
 		i_JumpRegData:in std_logic_vector(DATA_WIDTH - 1 downto 0);
-		i_Branch   	: in std_logic; --input 0 or 1 for branch or not branch
-		i_Zero   	: in std_logic;
-		i_BEQ   	: in std_logic; --1 = Beq, 0 = Bne
-		i_BranchImm	: in std_logic_vector(DATA_WIDTH - 1 downto 0);
 		i_JumpImm  	: in std_logic_vector(JADDR_WIDTH - 1 downto 0);
-		o_Addr   	: out std_logic_vector(DATA_WIDTH - 1 downto 0); --output address
+		i_Equal   	: in std_logic;
+		o_NewPC   	: out std_logic_vector(DATA_WIDTH - 1 downto 0); --output address
 		o_PCSrc		: out std_logic);
 end fetch;
 
@@ -111,7 +111,7 @@ begin
 		oCout2		 => open,
 		oCout 		 => open);
 	
-	s_JRMuxSelect <= (i_Branch AND i_BEQ AND i_Zero) OR (i_Branch AND (NOT i_BEQ) AND (NOT i_Zero)); -- control is determined by branch and then BNE/BEQ
+	s_JRMuxSelect <= (i_Branch AND i_BEQ AND i_Equal) OR (i_Branch AND (NOT i_BEQ) AND (NOT i_Equal)); -- control is determined by branch and then BNE/BEQ
 
 	B_MUX: mux2t1_N
 	--determines if we are branching or not
@@ -139,6 +139,6 @@ begin
         i_D1         => s_JumpTarget, --1 = jump addr (31-0)
 	    o_O          => s_Addr); --output goes to PC (next inst addr in processor)
 
-	o_Addr <= s_Addr;
+	o_NewPC <= s_Addr;
 
 end behavior;

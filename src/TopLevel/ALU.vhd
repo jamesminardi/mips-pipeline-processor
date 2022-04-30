@@ -100,6 +100,13 @@ begin
     -- Set overflow signal
     s_overflow <= s_cout XOR s_cout2;
 
+	with iALUOp select
+	s_overflow_control <=
+		'1' when "0000",
+		'1' when "0001",
+		'0' when others;
+
+
     oOverflow <= s_overflow AND s_overflow_control;
     
     -- Set less than result using Overflow detect and result from (a-b)
