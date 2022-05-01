@@ -94,6 +94,19 @@ main:
 
 	movn $t0, $t3, $t2		# $t0 = $t3 (3)
 
+		nop
+		nop
+		nop
+
+	lui $t9, 0x1000
+		nop
+		nop
+		nop
+	sw $t0, 0($t9)
+		nop
+	lw $t0, 0($t9)
+
+
 	addi $t1, $0, 8
 	addi $t2, $0, 16		
 
