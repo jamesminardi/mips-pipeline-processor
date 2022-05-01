@@ -136,7 +136,7 @@ process (id_Rs, id_Rt, id_Jump, id_JumpReg, id_Branch, ex_Rt, ex_Rd, ex_RegWr, e
 	else
 
 		-- Check control flow hazards after data
-		if (id_Branch = '1' OR id_Jump = '1' OR id_JumpReg = '1' OR id_Jal = '1') then
+		if (id_Branch = '1' OR id_Jump = '1' OR id_JumpReg = '1') then
 			-- Flush IF/ID
 			o_PCWrite	<= '1';
 			o_ifid_We	<= '1';
