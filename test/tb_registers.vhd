@@ -36,7 +36,6 @@ architecture tb of tb_registers is
 				i_RST		: in std_logic;	-- Reset input
 				i_WE		: in std_logic;	-- Write enable
 	
-				i_Rd		: in std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
 				i_ReadRs	: in std_logic_vector(N-1 downto 0);	-- Read Rs
 				i_ReadRt	: in std_logic_vector(N-1 downto 0);	-- Read Rt
 				i_Imm32		: in std_logic_vector(N-1 downto 0);	-- Immediate (32b)
@@ -49,16 +48,19 @@ architecture tb of tb_registers is
 				i_RegWrite	: in std_logic;
 				i_Movn		: in std_logic;
 				i_Halt 		: in std_logic;
+				i_PCPlus4 : in std_logic_vector(N-1 downto 0);
+				
+				i_Rd		: in std_logic_vector(DATA_SELECT-1 downto 0);
 				i_Rs		: in std_logic_vector(DATA_SELECT-1 downto 0);
 				i_Rt		: in std_logic_vector(DATA_SELECT-1 downto 0);
-				i_PCPlus4 : in std_logic_vector(N-1 downto 0);
-				o_PCPlus4 : out std_logic_vector(N-1 downto 0);
 				
+				o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);
 				o_Rs		: out std_logic_vector(DATA_SELECT-1 downto 0);
 				o_Rt		: out std_logic_vector(DATA_SELECT-1 downto 0);
-				o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
+	
 				o_ReadRs	: out std_logic_vector(N-1 downto 0);	-- Read Rs
 				o_ReadRt	: out std_logic_vector(N-1 downto 0);	-- Read Rt
+				o_PCPlus4 : out std_logic_vector(N-1 downto 0);
 				o_Imm32		: out std_logic_vector(N-1 downto 0);	-- Immediate (32b)
 				o_ALUSrc	: out std_logic; -- Choose ALU B to be immediate or Read Rt
 				o_ALUOp		: out std_logic_vector(ALU_OP_WIDTH-1 downto 0);	-- Choose ALU instruction
@@ -91,9 +93,10 @@ architecture tb of tb_registers is
 				i_Imm32		: in std_logic_vector(N-1 downto 0);	-- Immediate (32b)
 				i_ALUResult : in std_logic_vector(N-1 downto 0);
 				i_PCPlus4 : in std_logic_vector(N-1 downto 0);
+				i_Ovfl		: in std_logic;
+				o_Ovfl		: out std_logic;
+				
 				o_PCPlus4 : out std_logic_vector(N-1 downto 0);
-	
-	
 				o_Rd		: out std_logic_vector(DATA_SELECT - 1 downto 0);
 				o_ReadRs	: out std_logic_vector(N-1 downto 0); --------
 				o_ReadRt	: out std_logic_vector(N-1 downto 0);
@@ -122,6 +125,8 @@ architecture tb of tb_registers is
 				i_RegWrite	: in std_logic;
 				i_Halt 		: in std_logic;
 				i_ALUResult : in std_logic_vector(N-1 downto 0);
+				i_Ovfl		: in std_logic;
+				o_Ovfl		: out std_logic;
 	
 				o_Rd		: out std_logic_vector(DATA_SELECT - 1 downto 0);
 				o_PCPlus4	: out std_logic_vector(N-1 downto 0);
@@ -150,10 +155,6 @@ signal ifid_We : std_logic := '0';
 signal ifid_Rst : std_logic := '0';
 signal idex_We : std_logic := '0';
 signal idex_Rst : std_logic := '0';
-signal exmem_We : std_logic := '0';
-signal exmem_Rst : std_logic := '0';
-signal memwb_We : std_logic := '0';
-signal memwb_Rst : std_logic := '0';
 
 
 begin
@@ -172,29 +173,6 @@ begin
 		o_Inst 		=> id_Inst,
 		o_PCPlus4 	=> open);
 
-
-
-
-
-
-		i_Rs		: in std_logic_vector(DATA_SELECT-1 downto 0);
-		i_Rt		: in std_logic_vector(DATA_SELECT-1 downto 0);
-		
-		o_Rs		: out std_logic_vector(DATA_SELECT-1 downto 0);
-		o_Rt		: out std_logic_vector(DATA_SELECT-1 downto 0);
-		o_Rd		: out std_logic_vector(DATA_SELECT-1 downto 0);	-- Instruction Rd
-		o_ReadRs	: out std_logic_vector(N-1 downto 0);	-- Read Rs
-		o_ReadRt	: out std_logic_vector(N-1 downto 0);	-- Read Rt
-		o_Imm32		: out std_logic_vector(N-1 downto 0);	-- Immediate (32b)
-		o_ALUSrc	: out std_logic; -- Choose ALU B to be immediate or Read Rt
-		o_ALUOp		: out std_logic_vector(ALU_OP_WIDTH-1 downto 0);	-- Choose ALU instruction
-		o_Shamt		: out std_logic_vector(DATA_SELECT-1 downto 0);
-		o_MemWrite 	: out std_logic;
-		o_MemRead 	: out std_logic;
-		o_MemtoReg	: out std_logic_vector(MEMTOREG_WIDTH - 1 downto 0);
-		o_RegWrite	: out std_logic;
-		o_Movn		: out std_logic;
-		o_Halt 		: out std_logic);
 	IDEX: IDEX_reg
 	port map (
 		i_CLK		=> s_CLK,
@@ -233,13 +211,13 @@ begin
 		o_MemtoReg	=> open,
 		o_RegWrite	=> open,
 		o_Movn		=> open,
-		o_Halt 		=> open,);
+		o_Halt 		=> open);
 	
 	EXMEM: EXMEM_reg
 	port map (
 		i_CLK		=> s_CLK,
-		i_RST		=> exmem_Rst,
-		i_WE		=> exmem_We,
+		i_RST		=> '0',
+		i_WE		=> '1',
 
 		i_Rd		=> ex_Rd,
 		i_ReadRs	=> (others => '0'),
@@ -254,7 +232,9 @@ begin
 		i_Zero		=> '0',
 		i_Imm32		=> (others => '0'),
 		i_ALUResult => (others => '0'),
+		i_Ovfl => '0',
 
+		o_Ovfl => open,
 		o_Rd		=> mem_Rd,
 		o_ReadRs	=> open,
 		o_ReadRt	=> open,
@@ -272,8 +252,8 @@ begin
 	MEMWB: MEMWB_reg
 	port map (
 		i_CLK		=> s_CLK,
-		i_RST		=> memwb_Rst,
-		i_WE		=> memwb_We,
+		i_RST		=> '0',
+		i_WE		=> '1',
 
 		i_Rd		=> mem_Rd,
 		i_PCPlus4	=> (others => '0'),
@@ -282,8 +262,10 @@ begin
 		i_RegWrite	=> '0',
 		i_Halt 		=> '0',
 		i_ALUResult => (others => '0'),
+		i_Ovfl => '0',
 
-		o_Rd		=> wb_Rd,
+		o_Ovfl => open,
+		o_Rd		=> open,
 		o_PCPlus4	=> open,
 		o_MemtoReg 	=> open,
 		o_DMemOut	=> open,
@@ -311,10 +293,6 @@ P_TB: process
 	ifid_Rst	<= '1';
 	idex_We		<= '0';
 	idex_Rst	<= '1';
-	exmem_We	<= '0';
-	exmem_Rst	<= '1';
-	memwb_We	<= '0';
-	memwb_Rst	<= '1';
 	wait for gCLK_HPER*2;
 	
 -- -- Propogate instr "AAAAAAAA" through pipeline
@@ -457,17 +435,20 @@ P_TB: process
 -- wait for gCLK_HPER*2;
 
 
+-- Flush:
+-- ifid_Flush	<= '0';
+-- ifid_We		<= '1';
+-- ifid_Rst		<= '1';
+-- idex_We		<= '1';
+-- idex_Rst		<= '0';
+
 -- Instructions: A, B, F. Flush b
 if_Inst		<= x"AAAAAAAA";
 ifid_Flush	<= '0';
 ifid_We		<= '1';
 ifid_Rst	<= '0';
-idex_We		<= '0';
+idex_We		<= '1';
 idex_Rst	<= '0';
-exmem_We	<= '0';
-exmem_Rst	<= '0';
-memwb_We	<= '0';
-memwb_Rst	<= '0';
 wait for gCLK_HPER*2;
 -- B in fetch stage, flush it to a nop
 if_Inst		<= x"BBBBBBBB";
@@ -476,10 +457,6 @@ ifid_We		<= '1';
 ifid_Rst	<= '0';
 idex_We		<= '1';
 idex_Rst	<= '0';
-exmem_We	<= '0';
-exmem_Rst	<= '0';
-memwb_We	<= '0';
-memwb_Rst	<= '0';
 wait for gCLK_HPER*2;
 if_Inst		<= x"FFFFFFFF";
 ifid_Flush	<= '0';
@@ -487,10 +464,6 @@ ifid_We		<= '1';
 ifid_Rst	<= '0';
 idex_We		<= '1';
 idex_Rst	<= '0';
-exmem_We	<= '1';
-exmem_Rst	<= '0';
-memwb_We	<= '0';
-memwb_Rst	<= '0';
 wait for gCLK_HPER*2;
 if_Inst		<= x"FFFFFFFF";
 ifid_Flush	<= '0';
@@ -498,10 +471,6 @@ ifid_We		<= '1';
 ifid_Rst	<= '0';
 idex_We		<= '1';
 idex_Rst	<= '0';
-exmem_We	<= '1';
-exmem_Rst	<= '0';
-memwb_We	<= '1';
-memwb_Rst	<= '0';
 wait for gCLK_HPER*2;
 
 -- Reset
@@ -511,10 +480,6 @@ ifid_We		<= '0';
 ifid_Rst	<= '1';
 idex_We		<= '0';
 idex_Rst	<= '1';
-exmem_We	<= '0';
-exmem_Rst	<= '1';
-memwb_We	<= '0';
-memwb_Rst	<= '1';
 wait for gCLK_HPER*2;
 
 

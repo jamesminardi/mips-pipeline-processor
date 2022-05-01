@@ -85,7 +85,7 @@ process (id_Rs, id_Rt, id_Jump, id_JumpReg, id_Branch, ex_Rt, ex_Rd, ex_RegWr, e
 		o_idex_We	<= '1';
 		o_idex_Flush<= '1';
 
-	-- Jump Register data hazard
+	-- Jump Register data hazard (Can't be forwarded because fetch logic uses it right away, must stall)
 	elsif (id_JumpReg = '1' AND (id_Rs = ex_Rd AND ex_RegWr = '1')) then
 		-- Stall id for 1 instruction previous
 		o_PCWrite	<= '0';
@@ -94,7 +94,7 @@ process (id_Rs, id_Rt, id_Jump, id_JumpReg, id_Branch, ex_Rt, ex_Rd, ex_RegWr, e
 		o_idex_We	<= '1';
 		o_idex_Flush<= '1';
 
-	elsif (id_JumpReg = '1' AND (id_Rs = mem_Rd AND ex_RegWr = '1')) then
+	elsif (id_JumpReg = '1' AND (id_Rs = mem_Rd AND mem_RegWr = '1')) then
 		-- Stall id for 2 instructions previous
 		o_PCWrite	<= '0';
 		o_ifid_We	<= '0';
@@ -102,7 +102,7 @@ process (id_Rs, id_Rt, id_Jump, id_JumpReg, id_Branch, ex_Rt, ex_Rd, ex_RegWr, e
 		o_idex_We	<= '1';
 		o_idex_Flush<= '1';
 
-	elsif (id_JumpReg = '1' AND (id_Rs = wb_Rd AND ex_RegWr = '1')) then
+	elsif (id_JumpReg = '1' AND (id_Rs = wb_Rd AND wb_RegWr = '1')) then
 		-- Stall id for 3 instructions previous
 		o_PCWrite	<= '0';
 		o_ifid_We	<= '0';
@@ -125,13 +125,13 @@ process (id_Rs, id_Rt, id_Jump, id_JumpReg, id_Branch, ex_Rt, ex_Rd, ex_RegWr, e
 		o_ifid_Flush<= '0';
 		o_idex_We	<= '1';
 		o_idex_Flush<= '1';
-	-- elsif (id_Branch = '1' AND (id_Rs = wb_Rd OR id_Rt = wb_Rd) AND wb_RegWr = '1' AND wb_Rd /= "00000") then
-	-- 	-- Stall id for 3 instructions previous (data hazard from wb stage)
-	-- 	o_PCWrite	<= '0';
-	-- 	o_ifid_We	<= '0';
-	-- 	o_ifid_Flush<= '0';
-	-- 	o_idex_We	<= '1';
-	-- 	o_idex_Flush<= '1';
+	elsif (id_Branch = '1' AND (id_Rs = wb_Rd OR id_Rt = wb_Rd) AND wb_RegWr = '1' AND wb_Rd /= "00000") then
+		-- Stall id for 3 instructions previous (data hazard from wb stage)
+		o_PCWrite	<= '0';
+		o_ifid_We	<= '0';
+		o_ifid_Flush<= '0';
+		o_idex_We	<= '1';
+		o_idex_Flush<= '1';
 	
 	else
 
