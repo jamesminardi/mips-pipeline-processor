@@ -1,6 +1,5 @@
 # 
-#  In this test case, we are testing to verify that store word will populate all 32 bits 
-#  This test was approved directly by Professor Duwe
+#  In this test case, we are testing to verify that store word will populate all 32 bits
 #
 #
 .data

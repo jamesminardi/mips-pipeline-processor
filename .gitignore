@@ -10,6 +10,8 @@
 **/*.ini
 **/*.opt
 
+*.idea/
+
 # User-specific files
 *.rsuser
 *.suo
