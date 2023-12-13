@@ -1,7 +1,3 @@
-CPR E 381 Project 2: Mips Pipelined Processor
-James Minardi <jminardi@iastate.edu>
-Ella Knott <edknott@iastate.edu>
-
 # MIPS Hardware-Scheduled Pipeline Processor
 
 > [!NOTE]
@@ -14,6 +10,11 @@ Ella Knott <edknott@iastate.edu>
 * `mips`: MIPS assembly program tests
 * `src`: Source code of the pipelined processor
 * `test`: Test benches for individual VHDL components
+
+
+### Software Branch
+The `software` branch features a software-scheduled design that does not include any hazard mitigation techniques. Thus any data or control hazards must be resolved using software no ops. This design was implemented first before the hardware-scheduled design.
+
 
 ## Pipeline Stages
 1. Instruction Fetch (IF)
