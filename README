@@ -1,3 +1,5 @@
-CPR E 381 Project 2: Mips Pipelined Processor
-James Minardi <jminardi@iastate.edu>
-Ella Knott <edknott@iastate.edu>
+# MIPS Software-Scheduled Pipeline Processor
+
+## About
+
+5 Stage pipelined processor, without any hazard prevention techniques present. Return to the `main` branch to view the hardware-scheduled pipeline processor with those features.
