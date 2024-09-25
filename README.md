@@ -1,10 +1,10 @@
 # MIPS Hardware-Scheduled Pipeline Processor
 
 > [!NOTE]
-> To read in-depth about this processor's design and implementation, [check out my portfolio](http://localhost:4000/posts/MIPSProcessorTechnical/#51-design).
+> To read in-depth about this processor's design and implementation, [check out my portfolio](https://www.jamesminardi.com/posts/MIPSProcessorTechnical/).
 
 ## About
-5 stage pipelined processor featuring hazard prevention techniques with details present in my [technical description](http://localhost:4000/posts/MIPSProcessorTechnical/#51-design). The design, components, and tests were all made from scratch, and this implementation aimed to optimize performance through pipeline strategies and hazard mitigation compared to my [single-cycle processor design](https://github.com/jamesminardi/mips-single-cycle-processor).
+5 stage pipelined processor featuring hazard prevention techniques with details present in my [technical description](https://www.jamesminardi.com/posts/MIPSProcessorTechnical/). The design, components, and tests were all made from scratch, and this implementation aimed to optimize performance through pipeline strategies and hazard mitigation compared to my [single-cycle processor design](https://github.com/jamesminardi/mips-single-cycle-processor).
 
 ## Project Structure
 * `mips`: MIPS assembly program tests
